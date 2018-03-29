@@ -1,3 +1,40 @@
-<p>
-  axie-sales works!
-</p>
+<div class="axiesales" [ngClass]="{'state_loading':loading_state}">
+  <h1>Axie Sales</h1>
+
+  <div class="columns">
+    <div class="column c50">
+
+      <div class="inputs">
+        <div class="input_field">
+          <h2>Get Transaction</h2>
+          <input type="text" name="" value="" [(ngModel)]="tx_getTransaction">
+          <div class="btn color_btn gettransaction" (click)="getTransaction()">
+            getTransaction
+          </div>
+        </div>
+        <div class="input_field">
+          <h2>Get Transaction Count</h2>
+          <input type="text" name="" value="" [(ngModel)]="addr_getTransactionCount">
+          <div class="btn color_btn gettransactioncount" (click)="getTransactionCount()">
+            getTransactionCount
+          </div>
+        </div>
+        <div class="input_field">
+          <h2>Get Block Number</h2>
+          <div class="btn color_btn getblocknumber" (click)="getBlockNumber()">
+            getBlockNumber
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="column c50 output">
+      <h2>Output</h2>
+      <div class="output_field">
+        <div class="output" *ngFor="let elem of outputArray">
+          {{elem}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
