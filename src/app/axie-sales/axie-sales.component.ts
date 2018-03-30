@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-//import { BigNumber }         from "bignumber.js";
 //
 import { NgZone } from '@angular/core';
 import { NgModel } from '@angular/forms';
 
 import {TimeagoService} from '../services/timeago.service';
 
+import { BigNumber }         from "bignumber.js";
+
 declare let web3:any;
+declare var $:any;
 
 @Component({
   selector: 'app-axie-sales',
@@ -30,18 +32,37 @@ export class AxieSalesComponent implements OnInit {
 
   /* Axie Sales Data*/
   axie_sales:Array<any> = [];
+  axie_sales_backup:Array<any> = [];
 
 
   /* States */
   axie_sales_state:string = "";
 
+  /* sorting */
+  sorting_var:string = "timestamp";
+  sorting_types:object = {"timestamp":"-"};
+
+  /* search */
+  search_query:string = "";
+
 
   constructor(
-    private timeAgoService:TimeagoService
+    private timeAgoService:TimeagoService,
+    private _ngZone:NgZone
   ){}
 
   ngOnInit() {
     this.getAxieSales();
+  }
+
+  searchAxieSales():void {
+    var that = this;
+    this.axie_sales = this.axie_sales_backup;
+    console.log(that.search_query);
+    this.axie_sales = this.axie_sales.filter(
+      elem => elem.buyer.indexOf(that.search_query) !== -1 ||
+              elem.transactionHash.indexOf(that.search_query) !== -1
+    );
   }
 
 
@@ -57,9 +78,38 @@ export class AxieSalesComponent implements OnInit {
     return parseFloat(val).toFixed(digits);
   }
 
+  setSorting(e:any, val:string){
+    var elem;
+    if($(e.target).hasClass("header_cell")) elem = e.target;
+    else elem = $(e.target).parents(".header_cell")[0];
+    //
+    this.sorting_var = val;
+    if(!this.sorting_types[val]) this.sorting_types[val] = "";
+    //
+    $(".header_cell").attr("data-sorting","");
+    if     (this.sorting_types[val] == "")  { $(elem).attr("data-sorting", "asc"); this.sorting_types[val] = "+"; }
+    else if(this.sorting_types[val] == "+") { $(elem).attr("data-sorting", "desc"); this.sorting_types[val] = "-"; }
+    else if(this.sorting_types[val] == "-") { $(elem).attr("data-sorting", "asc"); this.sorting_types[val] = "+"; }
+    //
+    this._ngZone.run(()=>{});
+  }
+
+  getCurrentSorting():string{
+    var sorting:string = this.sorting_types[this.sorting_var] + this.sorting_var;
+    return sorting;
+  }
+
+  getSorting(name:string):string{
+    var sorting = this.sorting_types[name];
+    if (sorting == "+") sorting = "asc";
+    else if(sorting == "-") sorting = "desc";
+    else sorting = "";
+    return sorting;
+  }
+
 
   /**
-   * [getAxieSales] gets all the [AuctionSuccessfull] event transactions from the [AxieClockAuction] contract
+   * [getAxieSales] gets all the [AuctionSucces asfull] event transactions from the [AxieClockAuction] contract
    */
   getAxieSales():void {
     this.axie_sales_state = "loading";
@@ -73,9 +123,9 @@ export class AxieSalesComponent implements OnInit {
     var p = new Promise(function(resolve,reject){
       auctionSuccessfulEvent.get(function(err,res){
         if(err) reject(err);
-        resolve(res);
+        if(res) resolve(res);
       });
-    }).then(function(events){
+    }).then(function(events:any){
       var promises = [];
       for(let i = 0; i < events.length; i++){
         //that.logs.push(that.parseData(null, events[i]));
@@ -83,8 +133,11 @@ export class AxieSalesComponent implements OnInit {
             web3.eth["getTransaction"](events[i].transactionHash, function(err,res){
               if(err) reject(err);
               if(res) {
-                events[i].from = res.from;
-                events[i].to = res.to;
+                console.log(res);
+                events[i].seller = res.from;
+                events[i].buyer = events[i].args._winner;
+                events[i].tokenId = events[i].args._tokenId;
+                events[i].totalPrice = events[i].args._totalPrice;
                 resolve(events[i]);
               }
             });
@@ -98,9 +151,12 @@ export class AxieSalesComponent implements OnInit {
         //that.logs.push(that.parseData(null, transactions[i]));
         var p = new Promise(function(resolve, reject){
           web3.eth.getBlock(transactions[i].blockNumber, function(err,res){
-            transactions[i].timestamp = res.timestamp;
             if(err) reject(err);
-            resolve(transactions[i]);
+            if(res){
+              transactions[i].timestamp = res.timestamp;
+              transactions[i].id = i+1;
+              resolve(transactions[i]);
+            }
           });
         });
         promises.push(p);
@@ -108,6 +164,7 @@ export class AxieSalesComponent implements OnInit {
       return Promise.all(promises);
     }).then(function(transactions){
       that.axie_sales = that.axie_sales.concat(transactions);
+      that.axie_sales_backup = that.axie_sales;
       that.axie_sales_state = "";
       console.log("tx", transactions);
     }).catch(function(err){

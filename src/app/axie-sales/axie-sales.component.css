@@ -8,18 +8,31 @@
 /* general */
 h1 {font-family: "varela round", Arial, sans-serif; color: #3e3e3e; font-size: 34px; font-weight: normal;}
 .count {font-size: 20px;}
-.loading_msg {color: grey;}
+.loading_msg { display: flex; justify-content: center; align-items: center; font-size: 48px; font-weight: normal; color: grey; height: 100%;  }
+.titlebar {display: flex; justify-content: space-between;}
 
 /* table header */
-.table_header {display: flex; border-bottom: 1px solid #d5d5d5; padding:20px 30px;}
-.header_cell {flex:1; color: grey; font-size: 12px;}
-.table_row {display: flex; align-items: center; border-bottom: 1px solid #d5d5d5; padding:20px 30px;}
+.table_header {display: flex; border-bottom: 1px solid #d5d5d5; padding: 0 30px; height: 55px; align-items: center;}
+.header_cell {display: flex; flex:1; color: grey; font-size: 12px; cursor: pointer; user-select: none; height: 100%; align-items: center; }
+.header_cell:hover {color: #222;}
+.header_cell[data-sorting="asc"] .t:after {content: ""; margin-left: 5px; width: 0px; height: 0px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 5px solid #2f2f2f; }
+.header_cell[data-sorting="desc"] .t:after {content: ""; margin-left: 5px;   width: 0;  height: 0;  border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid #2f2f2f; }
+.header_cell .t {display: flex; align-items: center;}
+.table_row {display: flex; align-items: center; border-bottom: 1px solid #d5d5d5; padding: 0 30px; height: 50px;}
 /* table content */
-.cell {flex:1;}
+.cell {flex:1; padding-left: 10px;}
 .cell.index_field {flex:0.5;}
 .cell.axie_field {flex:0.5;}
+.cell.axie_field .link {padding: 10px 0; color: #1c92e8; text-decoration: underline;}
 .cell.price_field {flex:0.7;}
 .cell.timestamp_field {flex:0.7;}
 .cell.seller_field {max-width:100px; font-size: 10px; overflow: hidden; text-overflow: ellipsis;}
-.cell.buyer_field {max-width:100px; font-size: 10px; overflow: hidden; text-overflow: ellipsis;}
-.cell.tx_field {max-width:50px; font-size: 10px; overflow: hidden; text-overflow: ellipsis;}
+.cell.buyer_field {max-width:80px; font-size: 10px; overflow: hidden; text-overflow: ellipsis;}
+.cell.tx_field {max-width:60px; font-size: 10px; overflow: hidden; text-overflow: ellipsis;}
+.cell.tx_field .link{padding: 10px 0; color: #1c92e8; text-decoration: underline;}
+
+
+/* searchbar */
+.searchbar {border-radius: 30px; width:220px; background: white; border: 1px solid #c5c5c5; padding: 10px 18px;}
+.searchbar {transition: all 0.2s ease;}
+.searchbar:focus {width:550px; transition: all 0.2s ease;}

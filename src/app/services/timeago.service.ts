@@ -10,7 +10,7 @@ export class TimeagoService {
       minute: "1 min.",
       minutes: "%d minutes",
       hour: "1 hour",
-      hours: "about %d hours",
+      hours: "%d hours",
       day: "1 day",
       days: "%d days",
       month: "1 month",

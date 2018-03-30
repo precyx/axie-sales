@@ -1,5 +1,13 @@
 <div class="axieSales">
-  <h1>Axie Sales <span class="count">({{axie_sales.length}})</span></h1>
+
+  <div class="titlebar">
+      <h1>Axie Sales <span class="count">({{axie_sales.length}})</span></h1>
+      <input type="text" class="searchbar" name="" value="" placeholder="Search Buyer, TX" [(ngModel)]="search_query">
+      <div class="color_btn secondary" (click)="searchAxieSales()">
+        Search
+      </div>
+  </div>
+
 
   <h2 class="loading_msg" *ngIf="axie_sales_state=='loading'">
     Loading Axie Sales...
@@ -8,21 +16,20 @@
   <div class="sales_table" *ngIf="axie_sales_state != 'loading'">
 
     <div class="table_header">
-      <div class="header_cell cell index_field">Id</div>
-      <div class="header_cell cell axie_field">Axie</div>
-      <div class="header_cell cell price_field">Price</div>
-      <div class="header_cell cell timestamp_field">Timestamp</div>
-      <div class="header_cell cell seller_field">Seller</div>
-      <div class="header_cell cell buyer_field">Buyer</div>
-      <div class="header_cell cell tx_field">TX</div>
+      <div class="header_cell cell index_field"     (click)="setSorting($event, 'id')" [attr.data-sorting]="getSorting('id')"><p class="t">Id</p></div>
+      <div class="header_cell cell axie_field"      (click)="setSorting($event, 'tokenId')" [attr.data-sorting]="getSorting('tokenId')"><p class="t">Axie</p> </div>
+      <div class="header_cell cell price_field"     (click)="setSorting($event, 'totalPrice')" [attr.data-sorting]="getSorting('totalPrice')"><p class="t">Price</p> </div>
+      <div class="header_cell cell timestamp_field" (click)="setSorting($event, 'timestamp')" [attr.data-sorting]="getSorting('timestamp')"><p class="t">Timestamp</p> </div>
+      <div class="header_cell cell buyer_field"     (click)="setSorting($event, 'buyer')" [attr.data-sorting]="getSorting('buyer')"><p class="t">Buyer</p> </div>
+      <div class="header_cell cell tx_field"        (click)="setSorting($event, 'transactionHash')" [attr.data-sorting]="getSorting('transactionHash')"><p class="t">TX</p> </div>
     </div>
 
-    <div class="table_row" *ngFor="let sale of axie_sales | orderBy : ['-timestamp']; let i = index">
+    <div class="table_row" *ngFor="let sale of axie_sales | orderBy : [getCurrentSorting()]; let i = index">
       <div class="cell index_field" title="{{i+1}}">
-        {{i+1}}
+        {{sale.id}}
       </div>
       <div class="cell axie_field" title="https://axieinfinity.com/axie/{{sale.args._tokenId}}">
-        {{sale.args._tokenId}}
+        <a class="link" href="https://axieinfinity.com/axie/{{sale.args._tokenId}}" target="_blank">{{sale.args._tokenId}}</a>
       </div>
       <div class="cell price_field" title="{{round(weiToEth(sale.args._totalPrice), 9)}} ETH">
         {{round(weiToEth(sale.args._totalPrice), 3)}} ETH
@@ -30,14 +37,11 @@
       <div class="cell timestamp_field" title="{{sale.timestamp}}">
         {{getTimeAgo(sale.timestamp)}}
       </div>
-      <div class="cell seller_field" title="{{sale.from}}">
-        {{sale.from}}
-      </div>
-      <div class="cell buyer_field" title="{{sale.to}}">
-        {{sale.to}}
+      <div class="cell buyer_field" title="{{sale.buyer}}">
+        {{sale.buyer}}
       </div>
       <div class="cell tx_field" title="{{sale.transactionHash}}">
-        {{sale.transactionHash}}
+        <a class="link" href="https://etherscan.io/tx/{{sale.transactionHash}}" target="_blank">{{sale.transactionHash}}</a>
       </div>
     </div>
 
