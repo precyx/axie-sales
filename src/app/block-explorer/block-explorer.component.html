@@ -1,0 +1,80 @@
+<!-- Log Detail View -->
+<div class="detail_log_view" *ngIf="detailLogViewFlag">
+  <h2>Log {{currentLogId}}</h2>
+  <div class="logentries">
+    <div class="logentry" *ngFor="let entry of currentLog">
+      <span class="key">{{entry.key}}</span> <span class="val">{{entry.value}}</span>
+    </div>
+  </div>
+
+  <div class="bottombar">
+    <div class="color_btn secondary" (click)="closeLogDetailView()">Close</div>
+  </div>
+</div>
+
+<div class="axiesales" [ngClass]="{'state_loading':loading_state}">
+  <h1>Block Explorer</h1>
+  <div class="columns gap_big">
+    <div class="column c50">
+      <!-- Inputs -->
+      <div class="inputs">
+        <div class="input_field">
+          <h2>Get Transaction</h2>
+          <input type="text" name="" value="" [(ngModel)]="tx_getTransaction">
+          <div class="btn color_btn gettransaction" (click)="getTransaction()">
+            call
+          </div>
+        </div>
+        <div class="input_field">
+          <h2>Get Transaction Count</h2>
+          <input type="text" name="" value="" [(ngModel)]="addr_getTransactionCount">
+          <div class="btn color_btn gettransactioncount" (click)="getTransactionCount()">
+            call
+          </div>
+        </div>
+        <div class="input_field">
+          <h2>Get Code</h2>
+          <input type="text" name="" value="" [(ngModel)]="addr_getcode">
+          <div class="btn color_btn getcode" (click)="getCode()">
+            call
+          </div>
+        </div>
+        <div class="input_field">
+          <h2>Get Transaction Receipt</h2>
+          <input type="text" name="" value="" [(ngModel)]="tx_getTransactionReceipt">
+          <div class="btn color_btn getcode" (click)="getTransactionReceipt()">
+            call
+          </div>
+        </div>
+        <div class="input_field">
+          <h2>Get Block Number</h2>
+          <div class="btn color_btn getblocknumber" (click)="getBlockNumber()">
+            getBlockNumber
+          </div>
+        </div>
+        <div class="input_field">
+          <h2>Web3 Filter</h2>
+          <div class="btn color_btn web3filter" (click)="web3Filter()">
+            filter
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logs Output -->
+    <div class="column c50 output_area" [ngClass]="{'nologs':!logs.length}">
+      <h2>Output</h2>
+      <div class="outputs" [ngClass]="{'fullscreen' : outputFullscreenFlag}">
+        <div class="output_btn_bar">
+          <div class="btn" (click)="outputToggleFullscreen()">Fullscreen</div>
+        </div>
+        <div class="nologs_hint">
+          No logs yet...
+        </div>
+        <div class="output" *ngFor="let elem of logs; let i = index">
+          <span class="view_btn" (click)="viewLog(i, elem)">view</span> <span class="id">[{{i}}]</span> <span>{{elem}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

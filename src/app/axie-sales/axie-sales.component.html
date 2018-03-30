@@ -1,76 +1,45 @@
-<div class="detail_log_view" *ngIf="detailLogViewFlag">
-  <h2>Log {{currentLogId}}</h2>
-  <div class="logentries">
-    <div class="logentry" *ngFor="let entry of currentLog">
-      <span class="key">{{entry.key}}</span> <span class="val">{{entry.value}}</span>
+<div class="axieSales">
+  <h1>Axie Sales <span class="count">({{axie_sales.length}})</span></h1>
+
+  <h2 class="loading_msg" *ngIf="axie_sales_state=='loading'">
+    Loading Axie Sales...
+  </h2>
+
+  <div class="sales_table" *ngIf="axie_sales_state != 'loading'">
+
+    <div class="table_header">
+      <div class="header_cell cell index_field">Id</div>
+      <div class="header_cell cell axie_field">Axie</div>
+      <div class="header_cell cell price_field">Price</div>
+      <div class="header_cell cell timestamp_field">Timestamp</div>
+      <div class="header_cell cell seller_field">Seller</div>
+      <div class="header_cell cell buyer_field">Buyer</div>
+      <div class="header_cell cell tx_field">TX</div>
     </div>
-  </div>
 
-  <div class="bottombar">
-    <div class="color_btn secondary" (click)="closeLogDetailView()">Close</div>
-  </div>
-</div>
-
-<div class="axiesales" [ngClass]="{'state_loading':loading_state}">
-  <h1>Axie Sales</h1>
-
-  <div class="columns gap_big">
-    <div class="column c50">
-
-      <div class="inputs">
-        <div class="input_field">
-          <h2>Get Transaction</h2>
-          <input type="text" name="" value="" [(ngModel)]="tx_getTransaction">
-          <div class="btn color_btn gettransaction" (click)="getTransaction()">
-            call
-          </div>
-        </div>
-        <div class="input_field">
-          <h2>Get Transaction Count</h2>
-          <input type="text" name="" value="" [(ngModel)]="addr_getTransactionCount">
-          <div class="btn color_btn gettransactioncount" (click)="getTransactionCount()">
-            call
-          </div>
-        </div>
-        <div class="input_field">
-          <h2>Get Code</h2>
-          <input type="text" name="" value="" [(ngModel)]="addr_getcode">
-          <div class="btn color_btn getcode" (click)="getCode()">
-            call
-          </div>
-        </div>
-        <div class="input_field">
-          <h2>Get Transaction Receipt</h2>
-          <input type="text" name="" value="" [(ngModel)]="tx_getTransactionReceipt">
-          <div class="btn color_btn getcode" (click)="getTransactionReceipt()">
-            call
-          </div>
-        </div>
-        <div class="input_field">
-          <h2>Get Block Number</h2>
-          <div class="btn color_btn getblocknumber" (click)="getBlockNumber()">
-            getBlockNumber
-          </div>
-        </div>
-        <div class="input_field">
-          <h2>Web3 Filter</h2>
-          <div class="btn color_btn web3filter" (click)="web3Filter()">
-            filter
-          </div>
-        </div>
+    <div class="table_row" *ngFor="let sale of axie_sales | orderBy : ['-timestamp']; let i = index">
+      <div class="cell index_field" title="{{i+1}}">
+        {{i+1}}
       </div>
-
-    </div>
-    <div class="column c50 output_area" [ngClass]="{'nologs':!logs.length}">
-      <h2>Output</h2>
-      <div class="outputs">
-        <div class="nologs_hint">
-          No logs yet...
-        </div>
-        <div class="output" *ngFor="let elem of logs; let i = index">
-          <span class="view_btn" (click)="viewLog(i, elem)">view</span> <span class="id">[{{i}}]</span> <span>{{elem}}</span>
-        </div>
+      <div class="cell axie_field" title="https://axieinfinity.com/axie/{{sale.args._tokenId}}">
+        {{sale.args._tokenId}}
+      </div>
+      <div class="cell price_field" title="{{round(weiToEth(sale.args._totalPrice), 9)}} ETH">
+        {{round(weiToEth(sale.args._totalPrice), 3)}} ETH
+      </div>
+      <div class="cell timestamp_field" title="{{sale.timestamp}}">
+        {{getTimeAgo(sale.timestamp)}}
+      </div>
+      <div class="cell seller_field" title="{{sale.from}}">
+        {{sale.from}}
+      </div>
+      <div class="cell buyer_field" title="{{sale.to}}">
+        {{sale.to}}
+      </div>
+      <div class="cell tx_field" title="{{sale.transactionHash}}">
+        {{sale.transactionHash}}
       </div>
     </div>
+
   </div>
 </div>

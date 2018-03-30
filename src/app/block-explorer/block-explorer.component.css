@@ -1,0 +1,38 @@
+/* axie sales */
+.axiesales {}
+.axiesales.state_loading {opacity: 0.4;}
+
+
+/* input */
+.inputs {display: flex; flex-flow:wrap; align-items: left; }
+.input_field {padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #e6e6e6; width:100%;}
+.input_field input {width:100%; margin-bottom: 10px;}
+.input_field .btn {}
+
+/* output logs */
+.output_area.nologs {}
+.output_area.nologs .outputs {overflow: hidden;}
+.output_area.nologs .nologs_hint {display: block;}
+.output_area .nologs_hint {display: none;}
+
+.outputs {border-radius: 8px; background: white; border:1px solid #e9e9e9; padding: 10px; color: grey; font-size: 12px; font-style: italic; width: 100%; overflow: scroll;     max-height: 200px;}
+.outputs.fullscreen {display: block; position: absolute; left: 20px; width: calc(100vw - 60px); top: 80px; max-height: none; overflow: visible; overflow-x: scroll;}
+.outputs .output_btn_bar {display: flex; margin-bottom: 5px; font-style: normal;}
+.outputs .output_btn_bar .btn {color: #1c92e8; margin-right: 5px; padding: 4px 7px; font-size: 10px; font-weight: bold; text-transform: uppercase; cursor: pointer; user-select: none;}
+.output {display: flex; align-items: center;}
+.output:hover {background: whitesmoke;}
+.output .id {margin-right: 5px;}
+.output .view_btn {color: #1c92e8; border-radius: 2px; font-size: 9px; display: flex; align-items: center; padding: 7px 6px; margin-right: 5px; font-weight: bold; text-transform: uppercase; cursor: pointer; user-select: none;}
+.output .view_btn:hover {}
+
+
+/* detail log view */
+.detail_log_view { position: fixed; z-index: 9000000; width: 60vw; height: 80vh; padding: 40px; background: white; -webkit-box-shadow: 0 10px 30px #0000003d; box-shadow: 0 10px 30px #0000003d; border-radius: 8px; top: 50%; left: 50%; margin-left: -30vw; margin-top: -40vh;}
+
+.detail_log_view { }
+.detail_log_view h2 {margin-bottom: 20px;}
+.detail_log_view .logentries {max-height: 80%; overflow-y:scroll;}
+.detail_log_view .logentry {display: flex; font-size: 12px;  border-bottom: 1px solid #e4e4e4; padding: 5px 0px;}
+.detail_log_view .logentry .key {max-width:200px; color: grey; flex:1; width:100%;}
+.detail_log_view .logentry .val {max-width: 400px; overflow: hidden; text-overflow:ellipsis; width:100%;}
+.detail_log_view .bottombar {position: absolute; right: 40px; bottom: 40px;}
