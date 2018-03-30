@@ -3,6 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { NgZone } from '@angular/core';
 import { NgModel } from '@angular/forms';
 
+
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, map, tap } from 'rxjs/operators';
+import {Observable} from 'rxjs';
+
 import {TimeagoService} from '../services/timeago.service';
 
 import { BigNumber }         from "bignumber.js";
@@ -46,9 +51,11 @@ export class AxieSalesComponent implements OnInit {
   search_query:string = "";
 
 
+
   constructor(
     private timeAgoService:TimeagoService,
-    private _ngZone:NgZone
+    private _ngZone:NgZone,
+    private http: HttpClient
   ){}
 
   ngOnInit() {
@@ -63,6 +70,11 @@ export class AxieSalesComponent implements OnInit {
       elem => elem.buyer.indexOf(that.search_query) !== -1 ||
               elem.transactionHash.indexOf(that.search_query) !== -1
     );
+  }
+
+  toggleRow(sale:any):void {
+    if(!sale.detailview) sale.detailview = true;
+    else sale.detailview = !sale.detailview;
   }
 
 
@@ -91,11 +103,12 @@ export class AxieSalesComponent implements OnInit {
     else if(this.sorting_types[val] == "+") { $(elem).attr("data-sorting", "desc"); this.sorting_types[val] = "-"; }
     else if(this.sorting_types[val] == "-") { $(elem).attr("data-sorting", "asc"); this.sorting_types[val] = "+"; }
     //
-    this._ngZone.run(()=>{});
+    //this._ngZone.run(()=>{});
   }
 
   getCurrentSorting():string{
     var sorting:string = this.sorting_types[this.sorting_var] + this.sorting_var;
+    if(this.sorting_var == "type") sorting = this.sorting_types[this.sorting_var] + this.sorting_var + ", '+price'";
     return sorting;
   }
 
@@ -138,6 +151,7 @@ export class AxieSalesComponent implements OnInit {
                 events[i].buyer = events[i].args._winner;
                 events[i].tokenId = events[i].args._tokenId;
                 events[i].totalPrice = events[i].args._totalPrice;
+                events[i].detailview = false;
                 resolve(events[i]);
               }
             });
@@ -167,6 +181,17 @@ export class AxieSalesComponent implements OnInit {
       that.axie_sales_backup = that.axie_sales;
       that.axie_sales_state = "";
       console.log("tx", transactions);
+      return transactions;
+    }).then(function(transactions){
+      for(let i = 0; i < transactions.length; i++){
+          that.http.get("https://axieinfinity.com/api/axies/" + transactions[i].tokenId).subscribe(
+            elem => {
+              console.log(elem);
+              transactions[i].img = elem.figure.images[transactions[i].tokenId+".png"]
+              transactions[i].class = elem.class
+            }
+          )
+      }
     }).catch(function(err){
       that.axie_sales_state = "error";
       console.log("err",err);

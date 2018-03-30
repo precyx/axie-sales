@@ -8,6 +8,7 @@ import { AxieSalesComponent }         from './axie-sales/axie-sales.component';
 import { HeadbarComponent }           from './headbar/headbar.component';
 import { FooterComponent }            from './footer/footer.component';
 import { BlockExplorerComponent }     from './block-explorer/block-explorer.component';
+import { HttpClientModule }           from '@angular/common/http';
 
 import { TimeagoService }             from './services/timeago.service';
 import { OrderBy }                    from './pipes/orderBy-pipe';
@@ -25,7 +26,8 @@ import { OrderBy }                    from './pipes/orderBy-pipe';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [
     TimeagoService
