@@ -8,7 +8,7 @@
 /* general */
 h1 {font-family: "varela round", Arial, sans-serif; color: #3e3e3e; font-size: 34px; font-weight: normal;}
 .count {font-size: 20px;}
-.loading_msg { display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: normal; color: #c7c7c7; height: 100%; margin-top:150px;  }
+.loading_msg { display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: normal; color: #c7c7c7; height: 100%;  }
 .titlebar {display: flex; justify-content: space-between;}
 
 /* table header */
@@ -70,7 +70,7 @@ h1 {font-family: "varela round", Arial, sans-serif; color: #3e3e3e; font-size: 3
 .table_row_view2 .xa_blockdata .timestamp {font-size: 14px; color: #333; margin-bottom: 5px;}
 .table_row_view2 .xa_blockdata .buyer_field {display: flex; font-size: 10px; margin-bottom: 5px;}
 .table_row_view2 .xa_blockdata .tx_field {display: flex; font-size: 10px;}
-.table_row_view2 .xa_other .xa_expand {text-transform: uppercase; font-weight: bold; background: #ececec; cursor: pointer;  border-radius: 3px; padding:3px 6px;}
+.table_row_view2 .xa_other .xa_expand {text-transform: uppercase; font-weight: bold; background: #ececec; cursor: pointer;  border-radius: 3px; padding: 8px 15px;}
 
 /* general */
 .table_row_view2 .overflow {max-width:200px; overflow: hidden; text-overflow: ellipsis;}
@@ -80,3 +80,14 @@ h1 {font-family: "varela round", Arial, sans-serif; color: #3e3e3e; font-size: 3
 .searchbar {border-radius: 30px; width:220px; background: white; border: 1px solid #c5c5c5;  padding: 10px 18px;}
 .searchbar {transition: all 0.2s ease;}
 .searchbar:focus {width:550px; transition: all 0.2s ease;}
+
+
+
+
+
+/* scans */
+.nc_scans {position: fixed; z-index: 9999999; left:20px; bottom: 20px; }
+.nc_scan {  background: rgba(0, 0, 0, 0.8); border-radius: 6px; color: white; margin-top: 10px; padding: 10px; font-size: 12px;}
+.nc_scan.status_processing {background: rgb(215, 102, 67);}
+.nc_scan.status_completed { background: rgb(60, 186, 40);}
+.nc_scan.expired {display: none;}

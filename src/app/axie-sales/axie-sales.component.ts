@@ -14,6 +14,7 @@ import { BigNumber }         from "bignumber.js";
 
 declare let web3:any;
 declare var $:any;
+declare var await:any;
 
 @Component({
   selector: 'app-axie-sales',
@@ -38,10 +39,21 @@ export class AxieSalesComponent implements OnInit {
   /* Axie Sales Data*/
   axie_sales:Array<any> = [];
   axie_sales_backup:Array<any> = [];
-
-
-  /* States */
   axie_sales_state:string = "";
+
+  /* Axie Scan Data */
+  /* 30s        = 1 block
+     1min       = 2 blocks
+     1h         = 120 blocks
+     1d         = 2'880 blocks
+     1w         = 20'160 blocks
+     1m         = 86'400 blocks
+     1y         = 1'036'800 blocks
+  */
+  SCAN_BLOCKSTEP:number = 50000; // 3day
+  SCAN_MINBLOCK:number = 5321059; // 5y
+  scans:Array<any> = [];
+
 
   /* sorting */
   sorting_var:string = "timestamp";
@@ -51,7 +63,6 @@ export class AxieSalesComponent implements OnInit {
   search_query:string = "";
 
 
-
   constructor(
     private timeAgoService:TimeagoService,
     private _ngZone:NgZone,
@@ -59,7 +70,10 @@ export class AxieSalesComponent implements OnInit {
   ){}
 
   ngOnInit() {
-    this.getAxieSales();
+    var that = this;
+    this.getBlockData().then(function(blocknumber){
+        that.getAxieSalesGradually(blocknumber);
+    })
   }
 
   searchAxieSales():void {
@@ -121,24 +135,69 @@ export class AxieSalesComponent implements OnInit {
   }
 
 
+  getBlockData():any{
+    var that = this;
+    return new Promise(function(resolve, reject){
+      web3.eth.getBlockNumber(function(err,res){
+        if(err) reject(err);
+        else {
+          resolve(res);
+        }
+      });
+    })
+  }
+
+
+  getAxieSalesGradually(blocknumber:number){
+    var that = this;
+    var startblock:number = blocknumber - this.SCAN_BLOCKSTEP;
+    var endblock:number = blocknumber;
+    //
+    var newscan:any = {
+      "id"          : this.scans.length+1,
+      "startblock"  : startblock,
+      "endblock"    : endblock,
+      "status"      :"processing"
+    }
+    this.scans.push(newscan);
+    console.log("scans", this.scans);
+    //
+    this.getAxieSales(startblock, endblock).then(function(elem){
+      console.log("res",elem);
+      var newblocknumber = blocknumber - that.SCAN_BLOCKSTEP;
+      newscan.status = "completed";
+      if(blocknumber > that.SCAN_MINBLOCK) {
+          window.setTimeout(function(){
+          that.getAxieSalesGradually(newblocknumber);
+          },3000)
+      }
+      newscan.expired = true;
+    });
+  }
+
+  scanForNewAxieSales():void {
+
+  }
+
+
   /**
    * [getAxieSales] gets all the [AuctionSucces asfull] event transactions from the [AxieClockAuction] contract
    */
-  getAxieSales():void {
+  getAxieSales(fromblock:number, toblock:number):any {
     this.axie_sales_state = "loading";
     var that = this;
     var AxieClockAuctionContract = web3.eth.contract(this.axie_infinity_clock_auction);
     var AxieClockAuctionAPI = AxieClockAuctionContract.at(this.axie_infinity_clock_auction_contract);
     console.log(AxieClockAuctionAPI);
     // Event listening
-    var auctionSuccessfulEvent = AxieClockAuctionAPI.AuctionSuccessful({},{fromBlock: 5008826, toBlock: 'latest'});
+    var auctionSuccessfulEvent = AxieClockAuctionAPI.AuctionSuccessful({},{fromBlock: fromblock, toBlock: toblock});
     // Promise Chain
-    var p = new Promise(function(resolve,reject){
+    return new Promise(function(resolve,reject){ // auctionSuccessfulEvent
       auctionSuccessfulEvent.get(function(err,res){
         if(err) reject(err);
         if(res) resolve(res);
       });
-    }).then(function(events:any){
+    }).then(function(events:any){ //getTransaction
       var promises = [];
       for(let i = 0; i < events.length; i++){
         //that.logs.push(that.parseData(null, events[i]));
@@ -159,7 +218,7 @@ export class AxieSalesComponent implements OnInit {
         promises.push(p);
       }
       return Promise.all(promises);
-    }).then(function(transactions){
+    }).then(function(transactions){ //getBlock
       var promises = [];
       for(let i = 0; i < transactions.length; i++){
         //that.logs.push(that.parseData(null, transactions[i]));
@@ -176,16 +235,17 @@ export class AxieSalesComponent implements OnInit {
         promises.push(p);
       }
       return Promise.all(promises);
-    }).then(function(transactions){
+    }).then(function(transactions){ // render elems
       that.axie_sales = that.axie_sales.concat(transactions);
       that.axie_sales_backup = that.axie_sales;
       that.axie_sales_state = "";
+      that.scanForNewAxieSales();
       console.log("tx", transactions);
       return transactions;
-    }).then(function(transactions){
+    }).then(function(transactions){ // axi web api
       for(let i = 0; i < transactions.length; i++){
           that.http.get("https://axieinfinity.com/api/axies/" + transactions[i].tokenId).subscribe(
-            elem => {
+            (elem:any) => {
               console.log(elem);
               transactions[i].img = elem.figure.images[transactions[i].tokenId+".png"]
               transactions[i].class = elem.class

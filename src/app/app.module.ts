@@ -12,6 +12,7 @@ import { HttpClientModule }           from '@angular/common/http';
 
 import { TimeagoService }             from './services/timeago.service';
 import { OrderBy }                    from './pipes/orderBy-pipe';
+import { AxieAdoptedComponent } from './axie-adopted/axie-adopted.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { OrderBy }                    from './pipes/orderBy-pipe';
     HeadbarComponent,
     FooterComponent,
     BlockExplorerComponent,
-    OrderBy
+    OrderBy,
+    AxieAdoptedComponent
   ],
   imports: [
     BrowserModule,

@@ -1,3 +1,12 @@
+
+<div class="nc_scans">
+  <div class="nc_scan status_{{scan.status}}" *ngFor="let scan of scans" [ngClass]="{'expired' : scan.expired}">
+      <div> Status: {{scan.status}}</div>
+      <div> Scan: {{scan.startblock}} - {{scan.endblock}}</div>
+  </div>
+</div>
+
+
 <div class="axieSales">
 
   <div class="titlebar">
@@ -8,12 +17,7 @@
       </div>
   </div>
 
-
-  <h2 class="loading_msg" *ngIf="axie_sales_state=='loading'">
-    Loading Axie Sales...
-  </h2>
-
-  <div class="sales_table" *ngIf="axie_sales_state != 'loading'">
+  <div class="sales_table">
 
     <div class="table_header">
       <div class="header_cell cell axie_field"      (click)="setSorting($event, 'tokenId')" [attr.data-sorting]="getSorting('tokenId')"><p class="t">Axie</p> </div>
