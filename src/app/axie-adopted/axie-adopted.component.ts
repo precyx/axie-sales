@@ -48,22 +48,22 @@ export class AxieAdoptedComponent implements OnInit {
   }
 
   connectToContract():void {
-    var contract = web3.eth.contract(this.cryptokitties_sale_clock_auction);
-    var API = contract.at(this.cryptokitties_sale_clock_auction_contract);
+    var contract = web3.eth.contract(this.axie_infinity_presale_extended);
+    var API = contract.at(this.axie_infinity_presale_extended_contract);
     var that = this;
     //
     web3.eth.getBlockNumber(function(err,res){
-      that.getEventsGradually(API, res);
+      that.getEventsGradually(API, "AxiesAdopted", res);
     });
   }
 
-  getEventsGradually(API:any, currentBlock:number):void {
+  getEventsGradually(API:any, event:any, currentBlock:number):void {
     var that = this;
     //
     var startblock = currentBlock - this.scan_BLOCK_STEP;
     var endblock   = currentBlock;
     //
-    this.getEventData(API, "AuctionSuccessful", startblock, endblock).then(function(events){
+    this.getEventData(API, event, startblock, endblock).then(function(events){
       console.log("evt",events);
       that.axies_adopted = that.axies_adopted.concat(events);
       that.ngZone.run(()=>{});

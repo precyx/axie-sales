@@ -16,16 +16,22 @@
         Search
       </div>
   </div>
+  <div class="stats_bar">
+    <div class="total_eth stat">
+      <div class="name">Sales Total ETH</div><div class="val">{{round(weiToEth(axie_sales_totalEth), 3)}} ETH</div>
+    </div>
+  </div>
 
   <div class="sales_table">
 
     <div class="table_header">
       <div class="header_cell cell axie_field"      (click)="setSorting($event, 'tokenId')" [attr.data-sorting]="getSorting('tokenId')"><p class="t">Axie</p> </div>
-      <div class="header_cell cell type_field"      (click)="setSorting($event, 'class')" [attr.data-sorting]="getSorting('class')"><p class="t">Type</p> </div>
+      <div class="header_cell cell class_field"      (click)="setSorting($event, 'class')" [attr.data-sorting]="getSorting('class')"><p class="t">Type</p> </div>
+      <div class="header_cell cell mystic_field"    (click)="setSorting($event, 'mysticcount')" [attr.data-sorting]="getSorting('mysticcount')"><p class="t">Mystics</p> </div>
       <div class="header_cell cell price_field"     (click)="setSorting($event, 'totalPrice')" [attr.data-sorting]="getSorting('totalPrice')"><p class="t">Price</p> </div>
       <div class="header_cell cell timestamp_field" (click)="setSorting($event, 'timestamp')" [attr.data-sorting]="getSorting('timestamp')"><p class="t">Timestamp</p> </div>
-      <div class="header_cell cell buyer_field"     (click)="setSorting($event, 'buyer')" [attr.data-sorting]="getSorting('buyer')"><p class="t">Buyer</p> </div>
-      <div *ngIf="false" class="header_cell cell tx_field"        (click)="setSorting($event, 'transactionHash')" [attr.data-sorting]="getSorting('transactionHash')"><p class="t">TX</p> </div>
+      <div class="header_cell cell buyer_field"><p class="t">Buyer</p> </div>
+      <div *ngIf="false" class="header_cell cell tx_field"><p class="t">TX</p> </div>
     </div>
 
     <div class="table_row" *ngFor="let sale of axie_sales | orderBy : [getCurrentSorting()]; let i = index" [ngClass]="{'detailview' : sale.detailview}">
@@ -33,11 +39,14 @@
       <div class="table_row_view1" *ngIf="!sale.detailview" (click)="toggleRow(sale)">
         <a class="cell axie_field" title="https://axieinfinity.com/axie/{{sale.args._tokenId}}" href="https://axieinfinity.com/axie/{{sale.args._tokenId}}" target="_blank">
           <span class="axie_id">#{{sale.args._tokenId}}</span>
-          <img *ngIf="sale.img" width="40" height="auto" src="{{sale.img}}"/>
-          <img *ngIf="!sale.img" width="30" height="auto" src="../assets/icons/bw/axie_infinity.svg" alt="">
+          <img *ngIf="sale.img" src="{{sale.img}}"/>
+          <img *ngIf="!sale.img" src="../assets/icons/bw/axie_infinity.svg" alt="">
         </a>
         <div class="cell class_field">
           <div class="inner cx_class cx_class_{{sale.class}}">{{sale.class}}</div>
+        </div>
+        <div class="cell mystic_field">
+          {{sale.mysticcount}}
         </div>
         <div class="cell price_field" title="{{round(weiToEth(sale.args._totalPrice), 9)}} ETH">
           {{round(weiToEth(sale.args._totalPrice), 3)}} ETH
@@ -54,7 +63,11 @@
       <!-- row view 2 -->
       <div class="table_row_view2" *ngIf="sale.detailview">
         <div class="xa_axiedata">
-          <div class="xa_topbar"><span class="axie_id">#{{sale.args._tokenId}}</span><span class="cx_class cx_class_{{sale.class}}">{{sale.class}}</span> </div>
+          <div class="xa_topbar">
+            <span class="axie_id">#{{sale.args._tokenId}}</span>
+            <span class="cx_class cx_class_{{sale.class}}">{{sale.class}}</span>
+            <span class="mysticcount">Mystics: {{sale.mysticcount}}</span>
+          </div>
           <a class="axie_field" title="https://axieinfinity.com/axie/{{sale.args._tokenId}}" href="https://axieinfinity.com/axie/{{sale.args._tokenId}}" target="_blank">
             <img *ngIf="sale.img" width="auto" height="150" src="{{sale.img}}"/>
             <img *ngIf="!sale.img" width="100" height="auto" src="../assets/icons/bw/axie_infinity.svg" alt="">
@@ -67,9 +80,9 @@
           <div class="timestamp" title="{{sale.timestamp}}">
             {{getTimeAgo(sale.timestamp)}}
           </div>
-          <div class="buyer_field" title="{{sale.buyer}}">
+          <a href="https://etherscan.io/address/{{sale.buyer}}" target="_blank" class="buyer_field link" title="{{sale.buyer}}">
             <b>Buyer:</b> <p class="overflow">{{sale.buyer}}</p>
-          </div>
+          </a>
           <a href="https://etherscan.io/tx/{{sale.transactionHash}}" target="_blank" class="tx_field link" title="{{sale.transactionHash}}">
             <b>TX:</b> <span class="overflow">{{sale.transactionHash}}</span>
           </a>

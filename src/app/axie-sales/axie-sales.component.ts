@@ -41,6 +41,9 @@ export class AxieSalesComponent implements OnInit {
   axie_sales_backup:Array<any> = [];
   axie_sales_state:string = "";
 
+  /* Axie Sales Stats */
+  axie_sales_totalEth:number = 0;
+
   /* Axie Scan Data */
   /* 30s        = 1 block
      1min       = 2 blocks
@@ -79,7 +82,7 @@ export class AxieSalesComponent implements OnInit {
   searchAxieSales():void {
     var that = this;
     this.axie_sales = this.axie_sales_backup;
-    console.log(that.search_query);
+    //console.log(that.search_query);
     this.axie_sales = this.axie_sales.filter(
       elem => elem.buyer.indexOf(that.search_query) !== -1 ||
               elem.transactionHash.indexOf(that.search_query) !== -1
@@ -160,10 +163,10 @@ export class AxieSalesComponent implements OnInit {
       "status"      :"processing"
     }
     this.scans.push(newscan);
-    console.log("scans", this.scans);
+    //console.log("scans", this.scans);
     //
     this.getAxieSales(startblock, endblock).then(function(elem){
-      console.log("res",elem);
+      //console.log("res",elem);
       var newblocknumber = blocknumber - that.SCAN_BLOCKSTEP;
       newscan.status = "completed";
       if(blocknumber > that.SCAN_MINBLOCK) {
@@ -188,7 +191,7 @@ export class AxieSalesComponent implements OnInit {
     var that = this;
     var AxieClockAuctionContract = web3.eth.contract(this.axie_infinity_clock_auction);
     var AxieClockAuctionAPI = AxieClockAuctionContract.at(this.axie_infinity_clock_auction_contract);
-    console.log(AxieClockAuctionAPI);
+    //console.log(AxieClockAuctionAPI);
     // Event listening
     var auctionSuccessfulEvent = AxieClockAuctionAPI.AuctionSuccessful({},{fromBlock: fromblock, toBlock: toblock});
     // Promise Chain
@@ -205,12 +208,13 @@ export class AxieSalesComponent implements OnInit {
             web3.eth["getTransaction"](events[i].transactionHash, function(err,res){
               if(err) reject(err);
               if(res) {
-                console.log(res);
+                //console.log(res);
                 events[i].seller = res.from;
                 events[i].buyer = events[i].args._winner;
                 events[i].tokenId = events[i].args._tokenId;
                 events[i].totalPrice = events[i].args._totalPrice;
                 events[i].detailview = false;
+                that.axie_sales_totalEth += parseFloat(events[i].totalPrice);
                 resolve(events[i]);
               }
             });
@@ -240,15 +244,20 @@ export class AxieSalesComponent implements OnInit {
       that.axie_sales_backup = that.axie_sales;
       that.axie_sales_state = "";
       that.scanForNewAxieSales();
-      console.log("tx", transactions);
+      //console.log("tx", transactions);
       return transactions;
     }).then(function(transactions){ // axi web api
       for(let i = 0; i < transactions.length; i++){
           that.http.get("https://axieinfinity.com/api/axies/" + transactions[i].tokenId).subscribe(
             (elem:any) => {
-              console.log(elem);
-              transactions[i].img = elem.figure.images[transactions[i].tokenId+".png"]
-              transactions[i].class = elem.class
+              //console.log(elem);
+              transactions[i].img = elem.figure.images[transactions[i].tokenId+".png"];
+              transactions[i].class = elem.class;
+              var mysticcount = 0;
+              for(var j=0; j<elem.parts.length; j++){
+                if(elem.parts[j].mystic) mysticcount++;
+              }
+              transactions[i].mysticcount = mysticcount;
             }
           )
       }

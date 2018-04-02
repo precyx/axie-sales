@@ -6,10 +6,19 @@
 .sales_table {box-shadow: 0 2px 2px 0 rgba(0,0,0,.0466667), 0 3px 1px -2px rgba(0,0,0,.0666667), 0 1px 5px 0 rgba(0,0,0,.04); }
 
 /* general */
-h1 {font-family: "varela round", Arial, sans-serif; color: #3e3e3e; font-size: 34px; font-weight: normal;}
-.count {font-size: 20px;}
+h1 {font-family: "Varela round", Arial, sans-serif; color: #3e3e3e; font-size: 34px; font-weight: normal;}
+.count {font-size: 24px;}
 .loading_msg { display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: normal; color: #c7c7c7; height: 100%;  }
-.titlebar {display: flex; justify-content: space-between;}
+
+
+/* Titlebar */
+.titlebar {display: flex; justify-content: space-between; margin-bottom: 20px;}
+
+/* Statsbar */
+.stats_bar {margin-bottom: 20px;}
+.stats_bar .stat {display: flex; font-size: 12px; color: grey;}
+.stats_bar .stat .name {margin-right: 10px;}
+.stats_bar .stat .val {font-weight: bold;}
 
 /* table header */
 .table_header {display: flex; border-bottom: 1px solid #d5d5d5; padding: 0 30px; height: 55px; align-items: center;}
@@ -20,13 +29,13 @@ h1 {font-family: "varela round", Arial, sans-serif; color: #3e3e3e; font-size: 3
 .header_cell[data-sorting="desc"] .t:after {content: ""; margin-left: 5px;   width: 0;  height: 0;  border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid #2f2f2f; }
 .header_cell .t {display: flex; align-items: center;}
 /* tablerow */
-.table_row {display: flex; align-items: center; border-bottom: 1px solid #d5d5d5; padding: 0 30px;}
+.table_row {display: flex; align-items: center; border-bottom: 1px solid #d5d5d5; }
 .table_row.detailview {height: 200px;}
 
 
 
 /* tablerow VIEW 1 */
-.table_row_view1 {display: flex; align-items: center; width:100%; cursor: pointer;}
+.table_row_view1 {display: flex; align-items: center; width:100%; cursor: pointer; padding:0 30px;}
 .table_row_view1:hover {background:rgb(252,252,252);}
 /* table content */
 .cell {flex:0.5; padding-left: 10px; display: flex; align-items: center; height:60px;}
@@ -37,17 +46,12 @@ h1 {font-family: "varela round", Arial, sans-serif; color: #3e3e3e; font-size: 3
 /* @axiefield */
 .cell.axie_field {flex:0.4; position: relative;}
 .cell.axie_field:hover {opacity: 0.75;}
+.cell.axie_field img {max-height: 45px; max-width: 50px;}
 .cell.axie_field .link {}
 .cell.axie_field .axie_id { margin-right: 20px; color: grey; font-size: 12px;}
 .cell.axie_field .axie_id { }
-/* @classfield */
-.cx_class  { color: white; padding:2px 5px; border-radius: 3px; font-size: 12px;}
-.cx_class_aquatic { background: #00b8ce;}
-.cx_class_beast { background: #ffb812;}
-.cx_class_plant { background: #6cc000;}
-.cx_class_bird { background: #ff8bbd;}
-.cx_class_reptile { background: #c88ae0;}
-.cx_class_bug { background: #ff5341;}
+.cell.class_field {flex:0.4;}
+.cell.mystic_field {flex:0.4;}
 /* @pricefield */
 .cell.price_field {flex:0.5;}
 /* @timestampfield */
@@ -58,13 +62,23 @@ h1 {font-family: "varela round", Arial, sans-serif; color: #3e3e3e; font-size: 3
 .cell.buyer_field {flex:0.7; font-size: 10px; }
 .cell.buyer_field .overflow {max-width: 200px; overflow: hidden; text-overflow: ellipsis;}
 
+/* @classfield */
+.cx_class  { color: white; padding:2px 5px; border-radius: 3px; font-size: 12px;}
+.cx_class_aquatic { background: #00b8ce;}
+.cx_class_beast { background: #ffb812;}
+.cx_class_plant { background: #6cc000;}
+.cx_class_bird { background: #ff8bbd;}
+.cx_class_reptile { background: #c88ae0;}
+.cx_class_bug { background: #ff5341;}
+
 
 /* tablerow VIEW 2 */
-.table_row_view2 {display: flex; align-items: center; width:100%; }
+.table_row_view2 {display: flex; align-items: center; width:100%; padding:0 40px; }
 .table_row_view2 .xa_axiedata {display: flex; flex-flow: column; align-items: left; flex:1;}
 .table_row_view2 .xa_axiedata .xa_topbar {margin-bottom: 10px;}
 .table_row_view2 .xa_axiedata .xa_topbar .axie_id {margin-right: 5px; color: grey;}
 .table_row_view2 .xa_axiedata .axie_field {}
+.table_row_view2 .xa_axiedata .mysticcount { font-size: 12px; color: #a5a5a5; margin-left: 5px; border: 1px solid #dcdcdc; border-radius: 3px; padding: 2px 3px;}
 .table_row_view2 .xa_blockdata {display: flex; flex-flow: column; align-items: left; flex:1;}
 .table_row_view2 .xa_blockdata .price {font-size: 20px; color: grey; margin-bottom: 5px;}
 .table_row_view2 .xa_blockdata .timestamp {font-size: 14px; color: #333; margin-bottom: 5px;}
