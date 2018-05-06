@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {MatIconRegistry} from '@angular/material';
+import { DomSanitizer } from '@angular/platform-browser';
 declare var web3:any;
 declare var $:any;
 
@@ -12,7 +14,11 @@ export class HeadbarComponent implements OnInit {
   currentAddress:string;
 
   constructor(
-  ){}
+    private iconRegistry: MatIconRegistry,
+    private sanitizer: DomSanitizer
+  ){
+    iconRegistry.addSvgIcon('menu', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/menu.svg'));
+  }
 
   ngOnInit() {
   }

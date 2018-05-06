@@ -10,15 +10,15 @@
 <div class="axieSales">
 
   <div class="titlebar">
-      <h1>Axie Sales <span class="count">({{axie_sales.length}})</span></h1>
-      <input type="text" class="searchbar" name="" value="" placeholder="Search Buyer, TX" [(ngModel)]="search_query">
-      <div class="color_btn secondary" (click)="searchAxieSales()">
-        Search
+      <h1><span>Axie Sales</span> <span class="count">({{axie_sales.length}})</span></h1>
+      <div class="searchbar_container">
+        <input type="text" class="searchbar" name="" value="" placeholder="Search Buyer, TX" [(ngModel)]="search_query">
+        <mat-icon svgIcon="search" class="search_icon" (click)="searchAxieSales()"></mat-icon>
       </div>
   </div>
   <div class="stats_bar">
     <div class="total_eth stat">
-      <div class="name">Sales Total ETH</div><div class="val">{{round(weiToEth(axie_sales_totalEth), 3)}} ETH</div>
+      <div class="name">Total Volume: </div><div class="val">{{round(weiToEth(axie_sales_totalEth), 1)}} ETH</div>
     </div>
   </div>
 
@@ -26,7 +26,7 @@
 
     <div class="table_header">
       <div class="header_cell cell axie_field"      (click)="setSorting($event, 'tokenId')" [attr.data-sorting]="getSorting('tokenId')"><p class="t">Axie</p> </div>
-      <div class="header_cell cell class_field"      (click)="setSorting($event, 'class')" [attr.data-sorting]="getSorting('class')"><p class="t">Type</p> </div>
+      <div class="header_cell cell class_field"     (click)="setSorting($event, 'class')" [attr.data-sorting]="getSorting('class')"><p class="t">Class</p> </div>
       <div class="header_cell cell mystic_field"    (click)="setSorting($event, 'mysticcount')" [attr.data-sorting]="getSorting('mysticcount')"><p class="t">Mystics</p> </div>
       <div class="header_cell cell price_field"     (click)="setSorting($event, 'totalPrice')" [attr.data-sorting]="getSorting('totalPrice')"><p class="t">Price</p> </div>
       <div class="header_cell cell timestamp_field" (click)="setSorting($event, 'timestamp')" [attr.data-sorting]="getSorting('timestamp')"><p class="t">Timestamp</p> </div>
@@ -39,11 +39,13 @@
       <div class="table_row_view1" *ngIf="!sale.detailview" (click)="toggleRow(sale)">
         <a class="cell axie_field" title="https://axieinfinity.com/axie/{{sale.args._tokenId}}" href="https://axieinfinity.com/axie/{{sale.args._tokenId}}" target="_blank">
           <span class="axie_id">#{{sale.args._tokenId}}</span>
-          <img *ngIf="sale.img" src="{{sale.img}}"/>
-          <img *ngIf="!sale.img" src="../assets/icons/bw/axie_infinity.svg" alt="">
+          <div class="img_field">
+            <img *ngIf="sale.img" src="{{sale.img}}" class="stage{{sale.stage}}"/>
+            <img *ngIf="!sale.img" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
+          </div>
         </a>
         <div class="cell class_field">
-          <div class="inner cx_class cx_class_{{sale.class}}">{{sale.class}}</div>
+          <div class="inner cx_class cx_class_{{sale.class}}">{{sale.className}}</div>
         </div>
         <div class="cell mystic_field">
           {{sale.mysticcount}}
@@ -69,8 +71,10 @@
             <span class="mysticcount">Mystics: {{sale.mysticcount}}</span>
           </div>
           <a class="axie_field" title="https://axieinfinity.com/axie/{{sale.args._tokenId}}" href="https://axieinfinity.com/axie/{{sale.args._tokenId}}" target="_blank">
-            <img *ngIf="sale.img" width="auto" height="150" src="{{sale.img}}"/>
-            <img *ngIf="!sale.img" width="100" height="auto" src="../assets/icons/bw/axie_infinity.svg" alt="">
+            <div class="img_field">
+              <img *ngIf="sale.img"  src="{{sale.img}}" class="stage{{sale.stage}}"/>
+              <img *ngIf="!sale.img" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
+            </div>
           </a>
         </div>
         <div class="xa_blockdata">

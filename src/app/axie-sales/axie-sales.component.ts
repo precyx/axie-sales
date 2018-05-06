@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 //
 import { NgZone } from '@angular/core';
 import { NgModel } from '@angular/forms';
-
+import {MatIconRegistry} from '@angular/material';
+import { DomSanitizer } from '@angular/platform-browser';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
@@ -10,7 +11,7 @@ import {Observable} from 'rxjs';
 
 import {TimeagoService} from '../services/timeago.service';
 
-import { BigNumber }         from "bignumber.js";
+import { BigNumber }         from "big-number";
 
 declare let web3:any;
 declare var $:any;
@@ -35,6 +36,17 @@ export class AxieSalesComponent implements OnInit {
   /* AxieClockAuction */
   axie_infinity_clock_auction:Array<object> = [{constant:!1,inputs:[],name:"unpause",outputs:[],payable:!1,stateMutability:"nonpayable",type:"function"},{constant:!0,inputs:[{name:"",type:"address"},{name:"",type:"uint256"}],name:"auctions",outputs:[{name:"seller",type:"address"},{name:"startingPrice",type:"uint128"},{name:"endingPrice",type:"uint128"},{name:"duration",type:"uint64"},{name:"startedAt",type:"uint64"}],payable:!1,stateMutability:"view",type:"function"},{constant:!0,inputs:[],name:"paused",outputs:[{name:"",type:"bool"}],payable:!1,stateMutability:"view",type:"function"},{constant:!0,inputs:[],name:"ownerCut",outputs:[{name:"",type:"uint256"}],payable:!1,stateMutability:"view",type:"function"},{constant:!1,inputs:[],name:"pause",outputs:[],payable:!1,stateMutability:"nonpayable",type:"function"},{constant:!0,inputs:[],name:"owner",outputs:[{name:"",type:"address"}],payable:!1,stateMutability:"view",type:"function"},{constant:!1,inputs:[],name:"reclaimEther",outputs:[],payable:!1,stateMutability:"nonpayable",type:"function"},{constant:!1,inputs:[{name:"newOwner",type:"address"}],name:"transferOwnership",outputs:[],payable:!1,stateMutability:"nonpayable",type:"function"},{inputs:[{name:"_ownerCut",type:"uint256"}],payable:!1,stateMutability:"nonpayable",type:"constructor"},{payable:!1,stateMutability:"nonpayable",type:"fallback"},{anonymous:!1,inputs:[{indexed:!0,name:"_nftAddress",type:"address"},{indexed:!0,name:"_tokenId",type:"uint256"},{indexed:!1,name:"_startingPrice",type:"uint256"},{indexed:!1,name:"_endingPrice",type:"uint256"},{indexed:!1,name:"_duration",type:"uint256"}],name:"AuctionCreated",type:"event"},{anonymous:!1,inputs:[{indexed:!0,name:"_nftAddress",type:"address"},{indexed:!0,name:"_tokenId",type:"uint256"},{indexed:!1,name:"_totalPrice",type:"uint256"},{indexed:!1,name:"_winner",type:"address"}],name:"AuctionSuccessful",type:"event"},{anonymous:!1,inputs:[{indexed:!0,name:"_nftAddress",type:"address"},{indexed:!0,name:"_tokenId",type:"uint256"}],name:"AuctionCancelled",type:"event"},{anonymous:!1,inputs:[],name:"Pause",type:"event"},{anonymous:!1,inputs:[],name:"Unpause",type:"event"},{anonymous:!1,inputs:[{indexed:!0,name:"previousOwner",type:"address"},{indexed:!0,name:"newOwner",type:"address"}],name:"OwnershipTransferred",type:"event"},{constant:!0,inputs:[{name:"_nftAddress",type:"address"},{name:"_tokenId",type:"uint256"}],name:"getAuction",outputs:[{name:"seller",type:"address"},{name:"startingPrice",type:"uint256"},{name:"endingPrice",type:"uint256"},{name:"duration",type:"uint256"},{name:"startedAt",type:"uint256"}],payable:!1,stateMutability:"view",type:"function"},{constant:!0,inputs:[{name:"_nftAddress",type:"address"},{name:"_tokenId",type:"uint256"}],name:"getCurrentPrice",outputs:[{name:"",type:"uint256"}],payable:!1,stateMutability:"view",type:"function"},{constant:!1,inputs:[{name:"_nftAddress",type:"address"},{name:"_tokenId",type:"uint256"},{name:"_startingPrice",type:"uint256"},{name:"_endingPrice",type:"uint256"},{name:"_duration",type:"uint256"}],name:"createAuction",outputs:[],payable:!1,stateMutability:"nonpayable",type:"function"},{constant:!1,inputs:[{name:"_nftAddress",type:"address"},{name:"_tokenId",type:"uint256"}],name:"bid",outputs:[],payable:!0,stateMutability:"payable",type:"function"},{constant:!1,inputs:[{name:"_nftAddress",type:"address"},{name:"_tokenId",type:"uint256"}],name:"cancelAuction",outputs:[],payable:!1,stateMutability:"nonpayable",type:"function"},{constant:!1,inputs:[{name:"_nftAddress",type:"address"},{name:"_tokenId",type:"uint256"}],name:"cancelAuctionWhenPaused",outputs:[],payable:!1,stateMutability:"nonpayable",type:"function"}];
 
+
+  /* Axie Data */
+  axie_classes = {
+    "aquatic"   : "aquatic",
+    "beast"     : "beast",
+    "plant"     : "plant",
+    "bird"      : "bird",
+    "bug"       : "bug",
+    "reptile"   : "reptile",
+    "unknown"   : "???"
+  }
 
   /* Axie Sales Data*/
   axie_sales:Array<any> = [];
@@ -69,8 +81,12 @@ export class AxieSalesComponent implements OnInit {
   constructor(
     private timeAgoService:TimeagoService,
     private _ngZone:NgZone,
-    private http: HttpClient
-  ){}
+    private http: HttpClient,
+    private iconRegistry: MatIconRegistry,
+    private sanitizer: DomSanitizer
+  ){
+    iconRegistry.addSvgIcon('search', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/search.svg'));
+  }
 
   ngOnInit() {
     var that = this;
@@ -184,7 +200,7 @@ export class AxieSalesComponent implements OnInit {
 
 
   /**
-   * [getAxieSales] gets all the [AuctionSucces asfull] event transactions from the [AxieClockAuction] contract
+   * [getAxieSales] gets all the [AuctionSuccessfull] event transactions from the [AxieClockAuction] contract
    */
   getAxieSales(fromblock:number, toblock:number):any {
     this.axie_sales_state = "loading";
@@ -247,17 +263,28 @@ export class AxieSalesComponent implements OnInit {
       //console.log("tx", transactions);
       return transactions;
     }).then(function(transactions){ // axi web api
+      //console.log(transactions);
       for(let i = 0; i < transactions.length; i++){
           that.http.get("https://axieinfinity.com/api/axies/" + transactions[i].tokenId).subscribe(
             (elem:any) => {
-              //console.log(elem);
-              transactions[i].img = elem.figure.images[transactions[i].tokenId+".png"];
-              transactions[i].class = elem.class;
-              var mysticcount = 0;
-              for(var j=0; j<elem.parts.length; j++){
-                if(elem.parts[j].mystic) mysticcount++;
+              console.log(elem);
+              switch(elem.stage){
+                case    1 : transactions[i].img = "assets/img/egg.png"; break;  
+                case    2 : transactions[i].img = "assets/img/larva.png"; break;
+                default   : transactions[i].img = elem.figure.images[transactions[i].tokenId+".png"];
               }
-              transactions[i].mysticcount = mysticcount;
+              transactions[i].stage = elem.stage;
+              transactions[i].class = elem.class || "unknown";
+              transactions[i].className = elem.class || "-";
+              if(elem.parts) {
+                var mysticcount = 0;
+                for(var j=0; j<elem.parts.length; j++){
+                  if(elem.parts[j].mystic) mysticcount++;
+                }
+                transactions[i].mysticcount = mysticcount;
+                console.log(transactions[i].mysticcount);
+              }
+              else transactions[i].mysticcount = 0;
             }
           )
       }

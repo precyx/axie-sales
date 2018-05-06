@@ -57,18 +57,18 @@ export class AxieAdoptedComponent implements OnInit {
     });
   }
 
-  getEventsGradually(API:any, event:any, currentBlock:number):void {
+  getEventsGradually(API:any, _event:any, _currentBlock:number):void {
     var that = this;
     //
-    var startblock = currentBlock - this.scan_BLOCK_STEP;
-    var endblock   = currentBlock;
+    var startblock = _currentBlock - this.scan_BLOCK_STEP;
+    var endblock   = _currentBlock;
     //
-    this.getEventData(API, event, startblock, endblock).then(function(events){
+    this.getEventData(API, _event, startblock, endblock).then(function(events){
       console.log("evt",events);
       that.axies_adopted = that.axies_adopted.concat(events);
       that.ngZone.run(()=>{});
-      if(currentBlock > that.scan_EARLIEST_BLOCK) {
-        that.getEventsGradually(API, currentBlock);
+      if(_currentBlock > that.scan_EARLIEST_BLOCK) {
+        that.getEventsGradually(API, _event, _currentBlock);
       }
     });
   }

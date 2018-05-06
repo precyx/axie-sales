@@ -6,19 +6,19 @@
 .sales_table {box-shadow: 0 2px 2px 0 rgba(0,0,0,.0466667), 0 3px 1px -2px rgba(0,0,0,.0666667), 0 1px 5px 0 rgba(0,0,0,.04); }
 
 /* general */
-h1 {font-family: "Varela round", Arial, sans-serif; color: #3e3e3e; font-size: 34px; font-weight: normal;}
-.count {font-size: 24px;}
+h1 {font-family: Arial, sans-serif; color: #262626; font-size: 34px; font-weight: normal; display:flex; align-items: center;}
+.count {color:#262626; opacity:0.7; font-size: 18px; margin-left: 15px;}
 .loading_msg { display: flex; justify-content: center; align-items: center; font-size: 24px; font-weight: normal; color: #c7c7c7; height: 100%;  }
 
 
 /* Titlebar */
-.titlebar {display: flex; justify-content: space-between; margin-bottom: 20px;}
+.titlebar {display: flex; justify-content: space-between; margin-bottom: 5px;}
 
 /* Statsbar */
-.stats_bar {margin-bottom: 20px;}
-.stats_bar .stat {display: flex; font-size: 12px; color: grey;}
+.stats_bar {margin-bottom: 40px;}
+.stats_bar .stat {display: flex; font-size: 14px; color: black; opacity: 0.5;}
 .stats_bar .stat .name {margin-right: 10px;}
-.stats_bar .stat .val {font-weight: bold;}
+.stats_bar .stat .val {}
 
 /* table header */
 .table_header {display: flex; border-bottom: 1px solid #d5d5d5; padding: 0 30px; height: 55px; align-items: center;}
@@ -37,28 +37,23 @@ h1 {font-family: "Varela round", Arial, sans-serif; color: #3e3e3e; font-size: 3
 /* tablerow VIEW 1 */
 .table_row_view1 {display: flex; align-items: center; width:100%; cursor: pointer; padding:0 30px;}
 .table_row_view1:hover {background:rgb(252,252,252);}
-/* table content */
 .cell {flex:0.5; padding-left: 10px; display: flex; align-items: center; height:60px;}
-/* @indexfield */
 .cell.index_field {flex:0.5;}
-/* @imgfield */
-.cell.img_field {flex:0.4;}
-/* @axiefield */
 .cell.axie_field {flex:0.4; position: relative;}
 .cell.axie_field:hover {opacity: 0.75;}
-.cell.axie_field img {max-height: 45px; max-width: 50px;}
+.cell.axie_field .img_field { width: 60px; align-items: center; display: flex; justify-content: left;  height: 100%;}
+.cell.axie_field img {max-width: 50px; max-height: 45px;}
+.cell.axie_field img.stage1 {max-width: 15px; max-height: 15px;}
+.cell.axie_field img.stage2 {max-width: 28px; max-height: 22px;}
+.cell.axie_field img.placeholder {max-width: 40px; max-height: 35px;}
 .cell.axie_field .link {}
-.cell.axie_field .axie_id { margin-right: 20px; color: grey; font-size: 12px;}
+.cell.axie_field .axie_id { width:60px; color: grey; font-size: 12px;}
 .cell.axie_field .axie_id { }
 .cell.class_field {flex:0.4;}
 .cell.mystic_field {flex:0.4;}
-/* @pricefield */
 .cell.price_field {flex:0.5;}
-/* @timestampfield */
 .cell.timestamp_field {flex:0.7;}
-/* @sellerfield */
 .cell.seller_field {}
-/* @buyerfield */
 .cell.buyer_field {flex:0.7; font-size: 10px; }
 .cell.buyer_field .overflow {max-width: 200px; overflow: hidden; text-overflow: ellipsis;}
 
@@ -70,6 +65,7 @@ h1 {font-family: "Varela round", Arial, sans-serif; color: #3e3e3e; font-size: 3
 .cx_class_bird { background: #ff8bbd;}
 .cx_class_reptile { background: #c88ae0;}
 .cx_class_bug { background: #ff5341;}
+.cx_class_unknown { color: #b3b3b3; }
 
 
 /* tablerow VIEW 2 */
@@ -78,6 +74,9 @@ h1 {font-family: "Varela round", Arial, sans-serif; color: #3e3e3e; font-size: 3
 .table_row_view2 .xa_axiedata .xa_topbar {margin-bottom: 10px;}
 .table_row_view2 .xa_axiedata .xa_topbar .axie_id {margin-right: 5px; color: grey;}
 .table_row_view2 .xa_axiedata .axie_field {}
+.table_row_view2 .xa_axiedata .axie_field img {max-width: 200px; max-height: 140px;}
+.table_row_view2 .xa_axiedata .axie_field img.stage1 {max-width:35px; max-height: 30px;}
+.table_row_view2 .xa_axiedata .axie_field img.stage2 {max-width:70px; max-height: 65px;}
 .table_row_view2 .xa_axiedata .mysticcount { font-size: 12px; color: #a5a5a5; margin-left: 5px; border: 1px solid #dcdcdc; border-radius: 3px; padding: 2px 3px;}
 .table_row_view2 .xa_blockdata {display: flex; flex-flow: column; align-items: left; flex:1;}
 .table_row_view2 .xa_blockdata .price {font-size: 20px; color: grey; margin-bottom: 5px;}
@@ -91,9 +90,12 @@ h1 {font-family: "Varela round", Arial, sans-serif; color: #3e3e3e; font-size: 3
 .table_row_view2 .link{color: #1c92e8; text-decoration: underline;}
 
 /* searchbar */
-.searchbar {border-radius: 30px; width:220px; background: white; border: 1px solid #c5c5c5;  padding: 10px 18px;}
+.searchbar_container {position:relative;}
+.searchbar_container .search_icon {    position: absolute; right: 12px; top: 3px; width: 33px; height: 33px; opacity: 0.5; cursor: pointer; padding: 5px;}
+.searchbar {border-radius: 30px; width:220px; border:none; background:#eaeaea;  padding: 12px 22px; color:rgba(0,0,0,0.4);}
 .searchbar {transition: all 0.2s ease;}
-.searchbar:focus {width:550px; transition: all 0.2s ease;}
+.searchbar::-webkit-input-placeholder {color: #a6a6a6;}
+.searchbar:focus {width:400px; transition: all 0.2s ease; background:white; box-shadow: 0 1px 4px #00000026;}
 
 
 

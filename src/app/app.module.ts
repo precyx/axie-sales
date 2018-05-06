@@ -9,6 +9,7 @@ import { HeadbarComponent }           from './headbar/headbar.component';
 import { FooterComponent }            from './footer/footer.component';
 import { BlockExplorerComponent }     from './block-explorer/block-explorer.component';
 import { HttpClientModule }           from '@angular/common/http';
+import {MatIconModule}                from '@angular/material';
 
 import { TimeagoService }             from './services/timeago.service';
 import { OrderBy }                    from './pipes/orderBy-pipe';
@@ -29,7 +30,11 @@ import { AxieAdoptedComponent } from './axie-adopted/axie-adopted.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatIconModule,
+  ],
+  exports: [
+    MatIconModule,
   ],
   providers: [
     TimeagoService
