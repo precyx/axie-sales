@@ -108,7 +108,8 @@ export class AxieSalesComponent implements OnInit {
    /* this.getCurrentBlock().then(function(blocknumber){
         that.getAxieSalesGradually(blocknumber);
     });*/
-    this.getAxieSales();
+    if(!web3) this.allAxiesSyncedEvent();
+    else this.getAxieSales();
   }
 
   /**
