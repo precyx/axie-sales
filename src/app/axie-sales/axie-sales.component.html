@@ -22,13 +22,15 @@
     </div>
   </div>
 
-  <div class="sales_table">
+
+
+  <div class="sales_table" *ngIf="axie_sales_state == ''">
 
     <div class="table_header">
-      <div class="header_cell cell axie_field"      (click)="setSorting($event, 'tokenId')" [attr.data-sorting]="getSorting('tokenId')"><p class="t">Axie</p> </div>
+      <div class="header_cell cell axie_field"      (click)="setSorting($event, 'axie_id')" [attr.data-sorting]="getSorting('axie_id')"><p class="t">Axie</p> </div>
       <div class="header_cell cell class_field"     (click)="setSorting($event, 'class')" [attr.data-sorting]="getSorting('class')"><p class="t">Class</p> </div>
-      <div class="header_cell cell mystic_field"    (click)="setSorting($event, 'mysticcount')" [attr.data-sorting]="getSorting('mysticcount')"><p class="t">Mystics</p> </div>
-      <div class="header_cell cell price_field"     (click)="setSorting($event, 'totalPrice')" [attr.data-sorting]="getSorting('totalPrice')"><p class="t">Price</p> </div>
+      <div class="header_cell cell mystic_field"    (click)="setSorting($event, 'mystic_count')" [attr.data-sorting]="getSorting('mystic_count')"><p class="t">Mystics</p> </div>
+      <div class="header_cell cell price_field"     (click)="setSorting($event, 'price')" [attr.data-sorting]="getSorting('price')"><p class="t">Price</p> </div>
       <div class="header_cell cell timestamp_field" (click)="setSorting($event, 'timestamp')" [attr.data-sorting]="getSorting('timestamp')"><p class="t">Timestamp</p> </div>
       <div class="header_cell cell buyer_field"><p class="t">Buyer</p> </div>
       <div *ngIf="false" class="header_cell cell tx_field"><p class="t">TX</p> </div>
@@ -37,21 +39,24 @@
     <div class="table_row" *ngFor="let sale of axie_sales | orderBy : [getCurrentSorting()]; let i = index" [ngClass]="{'detailview' : sale.detailview}">
       <!-- row view 1 -->
       <div class="table_row_view1" *ngIf="!sale.detailview" (click)="toggleRow(sale)">
-        <a class="cell axie_field" title="https://axieinfinity.com/axie/{{sale.args._tokenId}}" href="https://axieinfinity.com/axie/{{sale.args._tokenId}}" target="_blank">
-          <span class="axie_id">#{{sale.args._tokenId}}</span>
+        <a class="cell axie_field" title="https://axieinfinity.com/axie/{{sale.axie_id}}" href="https://axieinfinity.com/axie/{{sale.axie_id}}" target="_blank">
+          <span class="axie_id">#{{sale.axie_id}}</span>
           <div class="img_field">
             <img *ngIf="sale.img" src="{{sale.img}}" class="stage{{sale.stage}}"/>
             <img *ngIf="!sale.img" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
           </div>
         </a>
         <div class="cell class_field">
-          <div class="inner cx_class cx_class_{{sale.class}}">{{sale.className}}</div>
+          <div class="inner cx_class cx_class_{{sale.class}}" title="{{sale.className}}">
+            <div class="class_icon"></div>
+            <div class="txt">{{sale.className}}</div>
+          </div>
         </div>
         <div class="cell mystic_field">
-          {{sale.mysticcount}}
+          {{sale.mystic_count}}
         </div>
-        <div class="cell price_field" title="{{round(weiToEth(sale.args._totalPrice), 9)}} ETH">
-          {{round(weiToEth(sale.args._totalPrice), 3)}} ETH
+        <div class="cell price_field" title="{{round(weiToEth(sale.price), 9)}} ETH">
+          {{round(weiToEth(sale.price), 3)}} ETH
         </div>
         <div class="cell timestamp_field" title="{{sale.timestamp}}">
           {{getTimeAgo(sale.timestamp)}}
@@ -66,11 +71,13 @@
       <div class="table_row_view2" *ngIf="sale.detailview">
         <div class="xa_axiedata">
           <div class="xa_topbar">
-            <span class="axie_id">#{{sale.args._tokenId}}</span>
-            <span class="cx_class cx_class_{{sale.class}}">{{sale.class}}</span>
-            <span class="mysticcount">Mystics: {{sale.mysticcount}}</span>
+            <span class="axie_id">#{{sale.axie_id}}</span>
+            <span class="cx_class cx_class_{{sale.class}}">
+                <div class="txt">{{sale.class_name}}</div>
+            </span>
+            <span class="mysticcount">Mystics: {{sale.mystic_count}}</span>
           </div>
-          <a class="axie_field" title="https://axieinfinity.com/axie/{{sale.args._tokenId}}" href="https://axieinfinity.com/axie/{{sale.args._tokenId}}" target="_blank">
+          <a class="axie_field" title="https://axieinfinity.com/axie/{{sale.axie_id}}" href="https://axieinfinity.com/axie/{{sale.axie_id}}" target="_blank">
             <div class="img_field">
               <img *ngIf="sale.img"  src="{{sale.img}}" class="stage{{sale.stage}}"/>
               <img *ngIf="!sale.img" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
@@ -78,18 +85,20 @@
           </a>
         </div>
         <div class="xa_blockdata">
-          <div class="price" title="{{round(weiToEth(sale.args._totalPrice), 9)}} ETH">
-            {{round(weiToEth(sale.args._totalPrice), 3)}} ETH
+          <div class="price" title="{{round(weiToEth(sale.price), 9)}} ETH">
+            {{round(weiToEth(sale.price), 3)}} ETH
           </div>
           <div class="timestamp" title="{{sale.timestamp}}">
             {{getTimeAgo(sale.timestamp)}}
           </div>
-          <a href="https://etherscan.io/address/{{sale.buyer}}" target="_blank" class="buyer_field link" title="{{sale.buyer}}">
-            <b>Buyer:</b> <p class="overflow">{{sale.buyer}}</p>
-          </a>
-          <a href="https://etherscan.io/tx/{{sale.transactionHash}}" target="_blank" class="tx_field link" title="{{sale.transactionHash}}">
-            <b>TX:</b> <span class="overflow">{{sale.transactionHash}}</span>
-          </a>
+          <div class="buyer_field">
+            <b class="label">Buyer:</b> 
+            <a href="https://etherscan.io/address/{{sale.buyer}}" target="_blank" title="{{sale.buyer}}" class="link overflow">{{sale.buyer}}</a>
+          </div>
+          <div class="tx_field">
+            <b class="label">TX:</b>
+            <a href="https://etherscan.io/tx/{{sale.tx}}" target="_blank" class="link overflow" title="{{sale.tx}}">{{sale.tx}}</a>
+          </div>
         </div>
         <div class="xa_other">
           <div class="xa_expand" (click)="toggleRow(sale)">minimize</div>
@@ -99,5 +108,17 @@
 
     </div><!--end tablerow -->
 
+  </div><!--end salestable-->
+
+  <div class="loading_area" >
+    <div class="spinner_container">
+      <mat-progress-spinner 
+      class="spinner" 
+      [color]="spinnerColor" 
+      [mode]="spinnerMode"
+      [diameter]="spinnerDiameter">
+      </mat-progress-spinner>
+    </div>
   </div>
+
 </div>

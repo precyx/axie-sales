@@ -11,7 +11,12 @@ import {Observable} from 'rxjs';
 
 import {TimeagoService} from '../services/timeago.service';
 
-import { BigNumber }         from "big-number";
+import { BigNumber }         from "bignumber.js";
+
+import { AngularFirestore } from 'angularfire2/firestore';
+import { FirebaseFirestore } from '@firebase/firestore-types';
+
+import {MatProgressSpinnerModule} from '@angular/material';
 
 declare let web3:any;
 declare var $:any;
@@ -51,7 +56,7 @@ export class AxieSalesComponent implements OnInit {
   /* Axie Sales Data*/
   axie_sales:Array<any> = [];
   axie_sales_backup:Array<any> = [];
-  axie_sales_state:string = "";
+  axie_sales_state:string = "boot-up";
 
   /* Axie Sales Stats */
   axie_sales_totalEth:number = 0;
@@ -77,22 +82,80 @@ export class AxieSalesComponent implements OnInit {
   /* search */
   search_query:string = "";
 
+  /* DB */
+  DB:FirebaseFirestore;
+
+  /* Spinner */
+  spinnerColor = "primary";
+  spinnerMode = "indeterminate";
+  spinnerDiameter = 35;
+
 
   constructor(
     private timeAgoService:TimeagoService,
     private _ngZone:NgZone,
     private http: HttpClient,
     private iconRegistry: MatIconRegistry,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private db: AngularFirestore
   ){
     iconRegistry.addSvgIcon('search', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/search.svg'));
+    this.DB = db.firestore;
   }
 
   ngOnInit() {
     var that = this;
-    this.getBlockData().then(function(blocknumber){
+   /* this.getCurrentBlock().then(function(blocknumber){
         that.getAxieSalesGradually(blocknumber);
+    });*/
+    this.getAxieSales();
+  }
+
+  /**
+   * @return {Promise} returns a promise which yields the last scanned block
+   */
+  getSalesLastScannedBlock(){
+    var that = this;
+    var p = new Promise(function(resolve,reject){
+      that.DB.collection("sales-metadata").doc("sales-last-scanned").get().then((doc) => {
+        if (doc.exists) {
+          resolve(doc.data().block);
+        }
+      });
+    });
+    return p;
+  }
+
+  readFirebase(){
+    console.log(this.DB);
+    // read all entries
+    this.DB.collection("sales").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        console.log(doc.data());
+      });
+    });
+  }
+
+  addToFirebase(){
+    console.log(this.DB);
+
+    // Add a new document in collection "sales"
+    this.DB.collection("sales").doc("01").set({
+      price: 5,
+      axie_id: 4000,
+      img_url: "https://axieinfinity.com/api/axies/3715/a7386f57e95e1968861da6cac7b71864.png",
+      class: "beast",
+      mystics: 1,
+      timestamp: 1526511669,
+      buyer: "0xc454c4be786e8ad7610d6113c06e4a608af303cb",
+      tx: "0x3dc8b2fc60d4bfc7038bb3e44696e749091d140a51455b59a7fdee796edcd758"
     })
+    .then(function() {
+      console.log("Document successfully written!");
+    })
+    .catch(function(error) {
+      console.error("Error writing document: ", error);
+    });
   }
 
   searchAxieSales():void {
@@ -154,7 +217,10 @@ export class AxieSalesComponent implements OnInit {
   }
 
 
-  getBlockData():any{
+  /**
+   * @return {Promise} returns a promise which yields the [current block]
+   */
+  getCurrentBlock():any{
     var that = this;
     return new Promise(function(resolve, reject){
       web3.eth.getBlockNumber(function(err,res){
@@ -166,11 +232,45 @@ export class AxieSalesComponent implements OnInit {
     })
   }
 
-
-  getAxieSalesGradually(blocknumber:number){
+  /**
+   * Gets all Axie Sales
+   */
+  getAxieSales(){
     var that = this;
-    var startblock:number = blocknumber - this.SCAN_BLOCKSTEP;
-    var endblock:number = blocknumber;
+    var promises = [];
+    promises.push(new Promise(function(resolve,reject){
+      that.getSalesLastScannedBlock().then(function(block:any){
+        resolve({"lastScannedBlock": block});
+      });
+    }));
+    promises.push(new Promise(function(resolve,reject){
+      that.getCurrentBlock().then(function(block:any){
+        resolve({"currentBlock": block});
+      });
+    }));
+    Promise.all(promises).then((data) => {
+      var d:any = {};
+      Object.assign(d, ...data);
+      this.getAxieSalesGradually(d.lastScannedBlock, d.currentBlock);
+    })
+  }
+
+  /**
+   * Gets Axie Sales gradually by splitting the scan range in ~3000 blocks
+   * @param lastScannedBlock {number} [last scanned block] number
+   * @param currentBlock {number} [most recent block] number of the blockchain
+   */
+  getAxieSalesGradually(lastScannedBlock:number, currentBlock:number){
+    var that = this;
+    var startblock:number = lastScannedBlock;
+    var endblock:number = lastScannedBlock + this.SCAN_BLOCKSTEP;
+    if(startblock > currentBlock) startblock = currentBlock; //
+    if(endblock > currentBlock)   endblock   = currentBlock; //
+    //
+    console.log("last-scanned-block", lastScannedBlock);
+    console.log("current-block", currentBlock);
+    console.log("startblock", startblock);
+    console.log("endblock", endblock);
     //
     var newscan:any = {
       "id"          : this.scans.length+1,
@@ -181,116 +281,238 @@ export class AxieSalesComponent implements OnInit {
     this.scans.push(newscan);
     //console.log("scans", this.scans);
     //
-    this.getAxieSales(startblock, endblock).then(function(elem){
-      //console.log("res",elem);
-      var newblocknumber = blocknumber - that.SCAN_BLOCKSTEP;
+    this.getAxieSalesFromTo(startblock, endblock).then(function(res){
+      //console.log("res",res);
+      var newLastScannedBlock = lastScannedBlock + that.SCAN_BLOCKSTEP;
       newscan.status = "completed";
-      if(blocknumber > that.SCAN_MINBLOCK) {
-          window.setTimeout(function(){
-          that.getAxieSalesGradually(newblocknumber);
-          },3000)
+      if(newLastScannedBlock < currentBlock) {
+        //window.setTimeout(function(){
+          that.getAxieSalesGradually(newLastScannedBlock, currentBlock);
+        //},3000)
       }
+      else that.allAxiesSyncedEvent();
       newscan.expired = true;
     });
   }
 
-  scanForNewAxieSales():void {
-
-  }
 
 
   /**
-   * [getAxieSales] gets all the [AuctionSuccessfull] event transactions from the [AxieClockAuction] contract
+   * [getAxieSalesFromTo] gets all the [AuctionSuccessfull] event transactions from the [AxieClockAuction] contract in a range
+   * @param _fromblock {number} 
+   * @param _toblock {number} 
    */
-  getAxieSales(fromblock:number, toblock:number):any {
-    this.axie_sales_state = "loading";
+  getAxieSalesFromTo(_fromblock:number, _toblock:number):any {
+    this.axie_sales_state = "db-syncying";
     var that = this;
     var AxieClockAuctionContract = web3.eth.contract(this.axie_infinity_clock_auction);
-    var AxieClockAuctionAPI = AxieClockAuctionContract.at(this.axie_infinity_clock_auction_contract);
-    //console.log(AxieClockAuctionAPI);
+    var AxieClockAuctionAPI = AxieClockAuctionContract.at(this.axie_infinity_clock_auction_contract); //console.log(AxieClockAuctionAPI);
     // Event listening
-    var auctionSuccessfulEvent = AxieClockAuctionAPI.AuctionSuccessful({},{fromBlock: fromblock, toBlock: toblock});
+    var auctionSuccessfulEvent = AxieClockAuctionAPI.AuctionSuccessful({},{fromBlock: _fromblock, toBlock: _toblock});
     // Promise Chain
-    return new Promise(function(resolve,reject){ // auctionSuccessfulEvent
-      auctionSuccessfulEvent.get(function(err,res){
-        if(err) reject(err);
-        if(res) resolve(res);
-      });
-    }).then(function(events:any){ //getTransaction
-      var promises = [];
-      for(let i = 0; i < events.length; i++){
-        //that.logs.push(that.parseData(null, events[i]));
-        var p = new Promise(function(resolve,reject){
-            web3.eth["getTransaction"](events[i].transactionHash, function(err,res){
+    return new Promise(function(resolveAxieSales, rejectAxieSales){
+      var start = new Promise(function(resolve,reject){ // auctionSuccessfulEvent
+        auctionSuccessfulEvent.get(function(err,res){
+          if(err) reject(err);
+          if(res) resolve(res);
+        });
+      }).then(function(events:any){ //getTransaction
+        console.log("evt",events);
+        var promises = [];
+        for(let i = 0; i < events.length; i++){
+          //that.logs.push(that.parseData(null, events[i]));
+          var p = new Promise(function(resolve,reject){
+              web3.eth["getTransaction"](events[i].transactionHash, function(err,res){
+                if(err) reject(err);
+                if(res) {
+                  //console.log(res);
+                  events[i].seller = res.from;
+                  events[i].buyer = events[i].args._winner;
+                  events[i].tokenId = events[i].args._tokenId;
+                  events[i].totalPrice = events[i].args._totalPrice;
+                  events[i].detailview = false;
+                  //that.axie_sales_totalEth += parseFloat(events[i].totalPrice);
+                  resolve(events[i]);
+                }
+              });
+          });
+          promises.push(p);
+        }
+        return Promise.all(promises);
+      }).then(function(transactions){ //getBlock
+        var promises = [];
+        for(let i = 0; i < transactions.length; i++){
+          //that.logs.push(that.parseData(null, transactions[i]));
+          var p = new Promise(function(resolve, reject){
+            web3.eth.getBlock(transactions[i].blockNumber, function(err,res){
               if(err) reject(err);
-              if(res) {
-                //console.log(res);
-                events[i].seller = res.from;
-                events[i].buyer = events[i].args._winner;
-                events[i].tokenId = events[i].args._tokenId;
-                events[i].totalPrice = events[i].args._totalPrice;
-                events[i].detailview = false;
-                that.axie_sales_totalEth += parseFloat(events[i].totalPrice);
-                resolve(events[i]);
+              if(res){
+                transactions[i].timestamp = res.timestamp;
+                transactions[i].id = i+1;
+                resolve(transactions[i]);
               }
             });
-        });
-        promises.push(p);
-      }
-      return Promise.all(promises);
-    }).then(function(transactions){ //getBlock
-      var promises = [];
-      for(let i = 0; i < transactions.length; i++){
-        //that.logs.push(that.parseData(null, transactions[i]));
-        var p = new Promise(function(resolve, reject){
-          web3.eth.getBlock(transactions[i].blockNumber, function(err,res){
-            if(err) reject(err);
-            if(res){
-              transactions[i].timestamp = res.timestamp;
-              transactions[i].id = i+1;
-              resolve(transactions[i]);
-            }
           });
-        });
-        promises.push(p);
-      }
-      return Promise.all(promises);
-    }).then(function(transactions){ // render elems
-      that.axie_sales = that.axie_sales.concat(transactions);
-      that.axie_sales_backup = that.axie_sales;
-      that.axie_sales_state = "";
-      that.scanForNewAxieSales();
-      //console.log("tx", transactions);
-      return transactions;
-    }).then(function(transactions){ // axi web api
-      //console.log(transactions);
-      for(let i = 0; i < transactions.length; i++){
-          that.http.get("https://axieinfinity.com/api/axies/" + transactions[i].tokenId).subscribe(
-            (elem:any) => {
-              console.log(elem);
-              switch(elem.stage){
-                case    1 : transactions[i].img = "assets/img/egg.png"; break;  
-                case    2 : transactions[i].img = "assets/img/larva.png"; break;
-                default   : transactions[i].img = elem.figure.images[transactions[i].tokenId+".png"];
-              }
-              transactions[i].stage = elem.stage;
-              transactions[i].class = elem.class || "unknown";
-              transactions[i].className = elem.class || "-";
-              if(elem.parts) {
-                var mysticcount = 0;
-                for(var j=0; j<elem.parts.length; j++){
-                  if(elem.parts[j].mystic) mysticcount++;
+          promises.push(p);
+        }
+        return Promise.all(promises);
+      }).then(function(transactions){ // render elems
+        /*that.axie_sales = that.axie_sales.concat(transactions);
+        that.axie_sales_backup = that.axie_sales;
+        that.axie_sales_state = "";*/
+        //console.log("tx", transactions);
+        return transactions;
+      }).then(function(transactions){ // axi web api
+        //console.log(transactions);
+        var promises = [];
+        for(let i = 0; i < transactions.length; i++){
+          var p = new Promise(function(resolve, reject){
+            that.http.get("https://axieinfinity.com/api/axies/" + transactions[i].tokenId).subscribe(
+              (elem:any) => {
+                //console.log(elem);
+                switch(elem.stage){
+                  case    1 : transactions[i].img = "assets/img/egg.png"; break;  
+                  case    2 : transactions[i].img = "assets/img/larva.png"; break;
+                  default   : transactions[i].img = elem.figure.images[transactions[i].tokenId+".png"];
                 }
-                transactions[i].mysticcount = mysticcount;
-                console.log(transactions[i].mysticcount);
+                transactions[i].stage = elem.stage;
+                transactions[i].class = elem.class || "unknown";
+                transactions[i].className = elem.class || "-";
+                if(elem.parts) {
+                  var mysticcount = 0;
+                  for(var j=0; j<elem.parts.length; j++){
+                    if(elem.parts[j].mystic) mysticcount++;
+                  }
+                  transactions[i].mysticcount = mysticcount;
+                  //console.log(transactions[i].mysticcount);
+                }
+                else transactions[i].mysticcount = 0;
+                resolve(transactions[i]);
               }
-              else transactions[i].mysticcount = 0;
-            }
-          )
-      }
-    }).catch(function(err){
-      that.axie_sales_state = "error";
-      console.log("err",err);
+            )
+          });
+          promises.push(p);
+        }
+        return Promise.all(promises);
+      }).then(function(transactions){ // save sales in DB
+        //console.log("txs", transactions);
+        var promises = [];
+        transactions.forEach(tx => {
+          let p = new Promise(function(resolve, reject){
+            // save sales
+            //...
+            /*that.saveSale(tx).then(function(res){
+            });*/
+            that.saveSale(tx).then(function(){
+              that.saveSalesLastScannedBlock(tx.blockNumber).then(function(block){
+                resolve(block);
+              });
+            });
+            // save blocknumber
+          });
+          promises.push(p);
+        });
+        return Promise.all(promises);
+      }).then(function(data){ // save last scanned block in DB
+        return( new Promise(function(resolve,reject){
+          that.saveSalesLastScannedBlock(_toblock).then(function(block){
+            resolve(data);
+          });
+        }));
+      }).then(function(data){ // all data processed and saved, resolve function
+        resolveAxieSales(data);
+      }).catch(function(err){
+        that.axie_sales_state = "error";
+        console.log("err",err);
+      });
+
+    });
+  }
+
+  /**
+   * Saves a new [sale] with the [transactionHash] as ID in the Firebase DB
+   * @param tx {Sale-Object} [Sale] Transaction/Event/Object with price, buyer, tx, axie information
+   */
+  saveSale(tx){
+    //console.log("tx", tx);
+    var that = this;
+    var newSale = {
+      "axie_id"     : new BigNumber(tx.tokenId).toNumber(),
+      "buyer"       : tx.buyer,
+      "price"       : new BigNumber(tx.totalPrice).toNumber(),
+      "mystic_count": tx.mysticcount,
+      "class"       : tx.class,
+      "class_name"  : tx.className,
+      "stage"       : tx.stage,
+      "img"         : tx.img,
+      "timestamp"   : tx.timestamp,
+      "tx"          : tx.transactionHash,
+      "tx_index"    : tx.transactionIndex,
+      "block_number": tx.blockNumber,
+      "block_hash"  : tx.blockHash,
+      "event"       : tx.event
+    };
+    return new Promise(function(resolve,reject){
+      that.DB.collection("sales").doc(tx.transactionHash).set(newSale).then(function(data:any) {
+        resolve(data);
+        console.log(newSale + " new sale ADDED");
+      })
+      .catch(function(error) {
+        reject(error);
+        console.error("Error writing document: ", error);
+      });
+    });
+  }
+
+  /**
+   * Saves the last scanned block in DB
+   * @param block {number} last scanned block to save in db 
+   * @return {Promise}  
+   */
+  saveSalesLastScannedBlock(block){
+    var that = this;
+    return new Promise(function(resolve, reject){
+      that.DB.collection("sales-metadata").doc("sales-last-scanned").set({
+        block: block,
+      })
+      .then(function(data:any) {
+        resolve(data);
+        console.log(block + " last scanned block UPDATED!");
+      })
+      .catch(function(error) {
+        reject(error);
+        console.error("Error writing document: ", error);
+      });
+    });
+  }
+
+  /**
+   * @event allAxiesSynced fired when all the unscanned blocks are checked for sale events and all data is saved in DB 
+   */
+  allAxiesSyncedEvent(){
+    console.log("All Axies synced");
+    this.loadAxiesFromDB();
+  }
+
+  /**
+   * loads all Axies from Firebase DB
+   */
+  loadAxiesFromDB(){
+    var that = this;
+    this.axie_sales_state = "loading-from-db";
+    this.DB.collection("sales").get().then((querySnapshot) => {
+      //console.log("res", querySnapshot);
+      querySnapshot.forEach((sale) => {
+        var additionalProperties = {
+          "detailview" : false
+        };
+        var mySale:any = {...sale.data(), ...additionalProperties};
+        //console.log("sale", mySale);
+        that.axie_sales.push(mySale);
+        that.axie_sales_totalEth += mySale.price;
+      });
+      that.axie_sales_state = "";
+      console.log("sl", that.axie_sales);
     });
   }
 
