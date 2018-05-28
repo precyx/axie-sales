@@ -25,6 +25,7 @@
 !.vscode/launch.json
 !.vscode/extensions.json
 
+
 # misc
 /.sass-cache
 /connect.lock
@@ -48,7 +49,7 @@ Thumbs.db
 /src/environments/environment.ts
 /src/environments/environment.prod.ts
 
-# Firebase
+# Firebase .
 /functions
 firebase.json
 firestore.indexes.json
