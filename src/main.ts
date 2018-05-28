@@ -28,7 +28,7 @@ window.addEventListener('load', function() {
     // || Web3.givenProvider
     //console.log(Web3);
   } else {
-    console.log('No web3? You should consider trying MetaMask!')
+    //console.log('No web3? You should consider trying MetaMask!')
     window.web3 = undefined;
   }
   //web3.eth.defaultAccount = web3.eth.accounts[0];

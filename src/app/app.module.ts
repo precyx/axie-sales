@@ -7,6 +7,7 @@ import { AppRoutingModule }           from './/app-routing.module';
 import { AxieSalesComponent }         from './axie-sales/axie-sales.component';
 import { HeadbarComponent }           from './headbar/headbar.component';
 import { FooterComponent }            from './footer/footer.component';
+import { ToggleButtonComponent }      from './ui/toggle-button/toggle-button.component';
 import { BlockExplorerComponent }     from './block-explorer/block-explorer.component';
 import { HttpClientModule }           from '@angular/common/http';
 
@@ -107,6 +108,7 @@ export class MaterialModule { }
     AxieSalesComponent,
     HeadbarComponent,
     FooterComponent,
+    ToggleButtonComponent,
     BlockExplorerComponent,
     OrderBy,
     AxieAdoptedComponent

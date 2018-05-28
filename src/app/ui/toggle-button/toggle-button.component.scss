@@ -1,0 +1,35 @@
+// vars
+$primary-color : #a146ef;
+
+.btn {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    height: 33px;
+    border-radius: 50px;
+    margin-left: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    user-select: none;
+    color: $primary-color;
+    text-transform: uppercase;
+    &:hover {
+        background: rgba(0, 0, 0, 0.05);
+        transition: 0.2s all;
+    }
+    &.active {
+        background: $primary-color;
+        color: white;
+    }
+    .icon {
+        margin-right: 5px;
+        width:15px;
+    }
+    .img {
+        max-width: 15px;
+        max-height: 15px;
+    }
+}
+
+
+

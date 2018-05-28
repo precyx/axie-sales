@@ -9,116 +9,230 @@
 
 <div class="axieSales">
 
-  <div class="titlebar">
-      <h1><span>Axie Sales</span> <span class="count">({{axie_sales.length}})</span></h1>
-      <div class="searchbar_container">
-        <input type="text" class="searchbar" name="" value="" placeholder="Search Buyer, TX" [(ngModel)]="search_query">
-        <mat-icon svgIcon="search" class="search_icon" (click)="searchAxieSales()"></mat-icon>
-      </div>
-  </div>
-  <div class="stats_bar">
-    <div class="total_eth stat">
-      <div class="name">Total Volume: </div><div class="val">{{round(weiToEth(axie_sales_totalEth), 1)}} ETH</div>
-    </div>
-  </div>
 
 
+  <div class="sales_ubergroup" *ngIf="APP_STATUS.phase != 'setup'" [ngClass]="{'loading' : APP_STATUS.loading}">
 
-  <div class="sales_table" *ngIf="axie_sales_state == ''">
-
-    <div class="table_header">
-      <div class="header_cell cell axie_field"      (click)="setSorting($event, 'axie_id')" [attr.data-sorting]="getSorting('axie_id')"><p class="t">Axie</p> </div>
-      <div class="header_cell cell class_field"     (click)="setSorting($event, 'class')" [attr.data-sorting]="getSorting('class')"><p class="t">Class</p> </div>
-      <div class="header_cell cell mystic_field"    (click)="setSorting($event, 'mystic_count')" [attr.data-sorting]="getSorting('mystic_count')"><p class="t">Mystics</p> </div>
-      <div class="header_cell cell price_field"     (click)="setSorting($event, 'price')" [attr.data-sorting]="getSorting('price')"><p class="t">Price</p> </div>
-      <div class="header_cell cell timestamp_field" (click)="setSorting($event, 'timestamp')" [attr.data-sorting]="getSorting('timestamp')"><p class="t">Timestamp</p> </div>
-      <div class="header_cell cell buyer_field"><p class="t">Buyer</p> </div>
-      <div *ngIf="false" class="header_cell cell tx_field"><p class="t">TX</p> </div>
-    </div>
-
-    <div class="table_row" *ngFor="let sale of axie_sales | orderBy : [getCurrentSorting()]; let i = index" [ngClass]="{'detailview' : sale.detailview}">
-      <!-- row view 1 -->
-      <div class="table_row_view1" *ngIf="!sale.detailview" (click)="toggleRow(sale)">
-        <a class="cell axie_field" title="https://axieinfinity.com/axie/{{sale.axie_id}}" href="https://axieinfinity.com/axie/{{sale.axie_id}}" target="_blank">
-          <span class="axie_id">#{{sale.axie_id}}</span>
-          <div class="img_field">
-            <img *ngIf="sale.img" src="{{sale.img}}" class="stage{{sale.stage}}"/>
-            <img *ngIf="!sale.img" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
+      <div class="titlebar">
+          <h1><span>Axie Sales</span><span class="count">{{axie_total_sales}}</span></h1>
+          <div class="num_of_sales"> 
+            <h2 class="text">Showing: <span class="sll">{{axie_sales.length}} Sales</span></h2> 
           </div>
-        </a>
-        <div class="cell class_field">
-          <div class="inner cx_class cx_class_{{sale.class}}" title="{{sale.className}}">
-            <div class="class_icon"></div>
-            <div class="txt">{{sale.className}}</div>
+          <div class="filtergroup">
+            <div class="top_filters" *ngIf="web3Supported">
+              <app-toggle-button name="My Purchases" (click)="clickFilter('my-purchases')" [active]="isFilterActive('my-purchases')" ></app-toggle-button>
+              <app-toggle-button name="My Sales" (click)="clickFilter('my-sales')" [active]="isFilterActive('my-sales')" ></app-toggle-button>
+            </div>
+            <div class="filter_container">
+              <div class="filter_btn btn color_btn" (click)="toggleFilterMaster()">
+                  <mat-icon svgIcon="filter" class="icon"></mat-icon>
+                  <span>All Filters</span>
+              </div>
+              <div class="filter_master" *ngIf="showFilterMaster">
+                <h3>Filters</h3>
+                <div class="list">
+                  <div class="line">
+                    <div class="title">Stage</div>
+                    <div class="elems">
+                        <app-toggle-button name="Adult" (click)="clickFilter('stage-adult')" [active]="isFilterActive('stage-adult')" ></app-toggle-button>
+                        <app-toggle-button name="Petite" (click)="clickFilter('stage-petite')" [active]="isFilterActive('stage-petite')" ></app-toggle-button>
+                        <app-toggle-button name="Larva" (click)="clickFilter('stage-larva')" [active]="isFilterActive('stage-larva')" ></app-toggle-button>
+                        <app-toggle-button name="Egg" (click)="clickFilter('stage-egg')" [active]="isFilterActive('stage-egg')" ></app-toggle-button>
+                    </div>
+                  </div>
+                  <div class="line">
+                    <div class="title">Pureness</div>
+                    <div class="elems">
+                        <app-toggle-button name="1" (click)="clickFilter('pureness-1')" [active]="isFilterActive('pureness-1')" ></app-toggle-button>
+                        <app-toggle-button name="2" (click)="clickFilter('pureness-2')" [active]="isFilterActive('pureness-2')" ></app-toggle-button>
+                        <app-toggle-button name="3" (click)="clickFilter('pureness-3')" [active]="isFilterActive('pureness-3')" ></app-toggle-button>
+                        <app-toggle-button name="4" (click)="clickFilter('pureness-4')" [active]="isFilterActive('pureness-4')" ></app-toggle-button>
+                        <app-toggle-button name="5" (click)="clickFilter('pureness-5')" [active]="isFilterActive('pureness-5')" ></app-toggle-button>
+                        <app-toggle-button name="6" (click)="clickFilter('pureness-6')" [active]="isFilterActive('pureness-6')" ></app-toggle-button>
+                    </div>
+                  </div>
+                  <div class="line">
+                    <div class="title">Title</div>
+                    <div class="elems">
+                        <app-toggle-button name="Origin" (click)="clickFilter('title-origin')" [active]="isFilterActive('title-origin')" ></app-toggle-button>
+                    </div>
+                  </div>
+                  <div class="line">
+                      <div class="title">Class</div>
+                      <div class="elems">
+                          <app-toggle-button name="" imgpath="assets/icons/classes/beast_class.png"    imgpathActive="assets/icons/classes/white/beast_class_w.png" (click)="clickFilter('class-beast')" [active]="isFilterActive('class-beast')" ></app-toggle-button>
+                          <app-toggle-button name="" imgpath="assets/icons/classes/aquatic_class.png"  imgpathActive="assets/icons/classes/white/aquatic_class_w.png" (click)="clickFilter('class-aquatic')" [active]="isFilterActive('class-aquatic')" ></app-toggle-button>
+                          <app-toggle-button name="" imgpath="assets/icons/classes/plant_class.png"    imgpathActive="assets/icons/classes/white/plant_class_w.png" (click)="clickFilter('class-plant')" [active]="isFilterActive('class-plant')" ></app-toggle-button>
+                          <app-toggle-button name="" imgpath="assets/icons/classes/bird_class.png"     imgpathActive="assets/icons/classes/white/bird_class_w.png" (click)="clickFilter('class-bird')" [active]="isFilterActive('class-bird')" ></app-toggle-button>
+                          <app-toggle-button name="" imgpath="assets/icons/classes/bug_class.png"      imgpathActive="assets/icons/classes/white/bug_class_w.png"(click)="clickFilter('class-bug')" [active]="isFilterActive('class-bug')" ></app-toggle-button>
+                          <app-toggle-button name="" imgpath="assets/icons/classes/reptile_class.png"  imgpathActive="assets/icons/classes/white/reptile_class_w.png" (click)="clickFilter('class-reptile')" [active]="isFilterActive('class-reptile')" ></app-toggle-button>
+                          <app-toggle-button name="" imgpath="assets/icons/classes/nocturnal_class.png"imgpathActive="assets/icons/classes/white/nocturnal_class_w.png" (click)="clickFilter('class-nocturnal')" [active]="isFilterActive('class-nocturnal')" ></app-toggle-button>
+                          <app-toggle-button name="" imgpath="assets/icons/classes/cyborg_class.png"   imgpathActive="assets/icons/classes/white/cyborg_class_w.png"(click)="clickFilter('class-robotic')" [active]="isFilterActive('class-robotic')" ></app-toggle-button>
+                          <app-toggle-button name="" imgpath="assets/icons/classes/arctic_class.png"   imgpathActive="assets/icons/classes/white/arctic_class_w.png" (click)="clickFilter('class-arctic')" [active]="isFilterActive('class-arctic')" ></app-toggle-button>
+                      </div>
+                    </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="cell mystic_field">
-          {{sale.mystic_count}}
-        </div>
-        <div class="cell price_field" title="{{round(weiToEth(sale.price), 9)}} ETH">
-          {{round(weiToEth(sale.price), 3)}} ETH
-        </div>
-        <div class="cell timestamp_field" title="{{sale.timestamp}}">
-          {{getTimeAgo(sale.timestamp)}}
-        </div>
-        <div class="cell buyer_field" title="{{sale.buyer}}">
-          <p class="overflow">{{sale.buyer}}</p>
+      </div>
+      <div class="stats_bar" *ngIf="false">
+        <div class="total_eth stat">
+          <div class="name">Total Volume: </div><div class="val">{{round(weiToEth(axie_sales_totalEth), 1)}} ETH</div>
         </div>
       </div>
 
+    <div class="pagination_bar top" *ngIf="false">
+      <span class="page-status">Showing {{pagination_pointer}} - {{pagination_pointer + pagination_sales_per_page}} Sales</span>
+      <div class="pagination">
+        <div [ngClass]="{'disabled': pagination_current_page < 2}" (click)="clickPrevPagination()" class="pag-btn pag-arrow pag-arrow-left"><mat-icon svgIcon="first-page" class="icon arrow_left_icon"></mat-icon></div>
+        <div class="pag-btn pag-number">{{pagination_current_page}} / {{pagination_total_pages}}</div>
+        <div [ngClass]="{'disabled': pagination_current_page > pagination_total_pages-1}" (click)="clickNextPagination()" class="pag-btn pag-arrow pag-arrow-right"><mat-icon svgIcon="arrow-right" class="icon arrow_right_icon"></mat-icon></div>
+      </div>
+    </div>
 
-      <!-- row view 2 -->
-      <div class="table_row_view2" *ngIf="sale.detailview">
-        <div class="xa_axiedata">
-          <div class="xa_topbar">
+    <div class="sales_table" [ngClass]="{'filtered' : current_filtering}">
+      
+      <div class="table_header">
+        <div class="header_cell cell axie_field"      (click)="setSorting($event, 'axie_id')" [attr.data-sorting]="getSortingByName('axie_id')" [ngClass]="{'disabled' : disable_single_sortings}"><p class="t">Axie</p> </div>
+        <div class="header_cell cell class_field"     (click)="setSorting($event, 'class')" [attr.data-sorting]="getSortingByName('class')"     [ngClass]="{'disabled' : disable_single_sortings}"><p class="t">Class</p> </div>
+        <div class="header_cell cell exp_field"       (click)="setSorting($event, 'exp')" [attr.data-sorting]="getSortingByName('exp')"         [ngClass]="{'disabled' : disable_single_sortings}"><p class="t">Exp</p> </div>
+        <div class="header_cell cell level_field"     (click)="setSorting($event, 'level')" [attr.data-sorting]="getSortingByName('level')"     [ngClass]="{'disabled' : disable_single_sortings}"><p class="t">Level</p> </div>
+        <div class="header_cell cell pureness_field"  (click)="setSorting($event, 'pureness')" [attr.data-sorting]="getSortingByName('pureness')" [ngClass]="{'disabled' : disable_single_sortings}"><p class="t">Pureness</p> </div>
+        <div class="header_cell cell mystic_field"    (click)="setSorting($event, 'mystic_count')" [attr.data-sorting]="getSortingByName('mystic_count')" [ngClass]="{'disabled' : disable_single_sortings}"><p class="t">Mystics</p> </div>
+        <div class="header_cell cell price_field"     (click)="setSorting($event, 'price')" [attr.data-sorting]="getSortingByName('price')"><p class="t">Price</p> </div>
+        <div class="header_cell cell timestamp_field" (click)="setSorting($event, 'timestamp')" [attr.data-sorting]="getSortingByName('timestamp')"><p class="t">Timestamp</p> </div>
+        <div class="header_cell cell buyer_field static"><p class="t">Buyer</p> </div>
+        <div *ngIf="false" class="header_cell cell tx_field"><p class="t">TX</p> </div>
+      </div>
+
+      <div class="table_row" *ngFor="let sale of axie_sales; let i = index" [ngClass]="{'detailview' : sale.detailview}">
+        <!-- row view 1 -->
+        <div class="table_row_view1" *ngIf="!sale.detailview" (click)="toggleRow(sale)">
+          <a class="cell axie_field" title="https://axieinfinity.com/axie/{{sale.axie_id}}" href="https://axieinfinity.com/axie/{{sale.axie_id}}" target="_blank">
             <span class="axie_id">#{{sale.axie_id}}</span>
-            <span class="cx_class cx_class_{{sale.class}}">
-                <div class="txt">{{sale.class_name}}</div>
-            </span>
-            <span class="mysticcount">Mystics: {{sale.mystic_count}}</span>
-          </div>
-          <a class="axie_field" title="https://axieinfinity.com/axie/{{sale.axie_id}}" href="https://axieinfinity.com/axie/{{sale.axie_id}}" target="_blank">
             <div class="img_field">
-              <img *ngIf="sale.img"  src="{{sale.img}}" class="stage{{sale.stage}}"/>
+              <img *ngIf="sale.img" src="{{sale.img}}" class="stage{{sale.stage}}"/>
               <img *ngIf="!sale.img" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
             </div>
           </a>
-        </div>
-        <div class="xa_blockdata">
-          <div class="price" title="{{round(weiToEth(sale.price), 9)}} ETH">
+          <div class="cell class_field">
+            <div class="inner cx_class cx_class_{{sale.class}}" title="{{sale.className}}">
+              <div class="class_icon"></div>
+              <div class="txt">{{sale.className}}</div>
+            </div>
+          </div>
+          <div class="cell exp_field">
+            {{sale.exp}}
+          </div>
+          <div class="cell level_field">
+            {{sale.level}}
+          </div>
+          <div class="cell pureness_field" title="{{sale.pureness}} / 6">
+            <div class="scala s{{sale.pureness}}"><div class="bar"></div></div>
+          </div>
+          <div class="cell mystic_field">
+            {{sale.mystic_count}}
+          </div>
+          <div class="cell price_field" title="{{round(weiToEth(sale.price), 9)}} ETH">
             {{round(weiToEth(sale.price), 3)}} ETH
           </div>
-          <div class="timestamp" title="{{sale.timestamp}}">
+          <div class="cell timestamp_field" title="{{sale.timestamp}}">
             {{getTimeAgo(sale.timestamp)}}
           </div>
-          <div class="buyer_field">
-            <b class="label">Buyer:</b> 
-            <a href="https://etherscan.io/address/{{sale.buyer}}" target="_blank" title="{{sale.buyer}}" class="link overflow">{{sale.buyer}}</a>
-          </div>
-          <div class="tx_field">
-            <b class="label">TX:</b>
-            <a href="https://etherscan.io/tx/{{sale.tx}}" target="_blank" class="link overflow" title="{{sale.tx}}">{{sale.tx}}</a>
+          <div class="cell buyer_field" title="{{sale.buyer}}">
+            <p class="overflow">{{sale.buyer}}</p>
           </div>
         </div>
-        <div class="xa_other">
-          <div class="xa_expand" (click)="toggleRow(sale)">minimize</div>
+
+
+        <!-- row view 2 -->
+        <div class="table_row_view2" *ngIf="sale.detailview">
+          <div class="xa_axiedata">
+            <div class="xa_topbar">
+              <span class="axie_id">#{{sale.axie_id}}</span>
+              <span class="cx_class cx_class_{{sale.class}}" *ngIf="false">
+                  <div class="txt">{{sale.class_name}}</div>
+              </span>
+              <span class="mysticcount" *ngIf="false">Mystics: {{sale.mystic_count}}</span>
+            </div>
+            <a class="axie_field" title="https://axieinfinity.com/axie/{{sale.axie_id}}" href="https://axieinfinity.com/axie/{{sale.axie_id}}" target="_blank">
+              <div class="img_field">
+                <img *ngIf="sale.img"  src="{{sale.img}}" class="stage{{sale.stage}}"/>
+                <img *ngIf="!sale.img" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
+              </div>
+            </a>
+          </div>
+          <div class="xa_group">
+            <div class="xa_blockdata">
+              <div class="price" title="{{round(weiToEth(sale.price), 9)}} ETH">
+                {{round(weiToEth(sale.price), 3)}} ETH
+              </div>
+              <div class="timestamp" title="{{sale.timestamp}}">
+                {{getTimeAgo(sale.timestamp)}}
+              </div>
+              <div class="buyer_field field">
+                <b class="label">Buyer:</b> 
+                <a href="https://etherscan.io/address/{{sale.buyer}}" target="_blank" title="{{sale.buyer}}" class="link overflow">{{sale.buyer}}</a>
+              </div>
+              <div class="seller_field field">
+                <b class="label">Seller:</b> 
+                <a href="https://etherscan.io/address/{{sale.seller}}" target="_blank" title="{{sale.seller}}" class="link overflow">{{sale.seller}}</a>
+              </div>
+              <div class="tx_field field">
+                <b class="label">TX:</b>
+                <a href="https://etherscan.io/tx/{{sale.tx}}" target="_blank" class="link overflow" title="{{sale.tx}}">{{sale.tx}}</a>
+              </div>
+            </div>
+            <div class="xa_stats">
+              <div class="class_field field">
+                <div class="label">Class:</div> 
+                <div class="val">{{sale.class_name}}</div>
+              </div>
+              <div class="pureness_field field" title="{{sale.pureness}} / 6">
+                <div class="label">Pureness:</div>
+                <div class="scala s{{sale.pureness}}"><div class="bar"></div></div>
+                <div class="val">{{sale.pureness}}/6</div>
+              </div>
+              <div class="mystic_field field">
+                <div class="label">Mystics:</div> 
+                <div class="val">{{sale.mystic_count}}</div>
+              </div>
+              <div class="exp_field field">
+                <div class="label">EXP:</div> 
+                <div class="val">{{sale.exp}}</div>
+              </div>
+              <div class="level_field field">
+                <div class="label">Level:</div> 
+                <div class="val">{{sale.level}}</div>
+              </div>
+              <div class="title_field field">
+                <div class="label">Title:</div> 
+                <div class="val">{{sale.title}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="xa_other">
+            <div class="xa_expand" (click)="toggleRow(sale)"><mat-icon svgIcon="close" class="icon"></mat-icon></div>
+          </div>
         </div>
+
+      </div><!--end tablerow -->
+    </div><!--end salestable-->
+  
+
+  </div><!-- end salesubergroup-->
+
+  <div class="loading_area" *ngIf="APP_STATUS.loading">
+      <div class="spinner_container">
+        <mat-progress-spinner 
+        class="spinner" 
+        [color]="spinnerColor" 
+        [mode]="spinnerMode"
+        [diameter]="spinnerDiameter">
+        </mat-progress-spinner>
+        <div class="loading-text">{{APP_STATUS.loading}}</div>
       </div>
-
-
-    </div><!--end tablerow -->
-
-  </div><!--end salestable-->
-
-  <div class="loading_area" >
-    <div class="spinner_container">
-      <mat-progress-spinner 
-      class="spinner" 
-      [color]="spinnerColor" 
-      [mode]="spinnerMode"
-      [diameter]="spinnerDiameter">
-      </mat-progress-spinner>
     </div>
-  </div>
 
 </div>
