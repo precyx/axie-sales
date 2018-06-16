@@ -14,68 +14,97 @@
   <div class="sales_ubergroup" *ngIf="APP_STATUS.phase != 'setup'" [ngClass]="{'loading' : APP_STATUS.loading}">
 
       <div class="titlebar">
-          <h1><span>Axie Sales</span><span class="count">{{axie_total_sales}}</span></h1>
+          <h1><span class="title">Marketplace Sales</span><span class="count">{{axie_total_sales}}</span></h1>
           <div class="num_of_sales"> 
             <h2 class="text">Showing: <span class="sll">{{axie_sales.length}} Sales</span></h2> 
           </div>
-          <div class="filtergroup">
-            <div class="top_filters" *ngIf="web3Supported">
-              <app-toggle-button name="My Purchases" (click)="clickFilter('my-purchases')" [active]="isFilterActive('my-purchases')" ></app-toggle-button>
-              <app-toggle-button name="My Sales" (click)="clickFilter('my-sales')" [active]="isFilterActive('my-sales')" ></app-toggle-button>
+      </div>
+      <div class="filtergroup">
+          <div class="top_filters" *ngIf="web3Supported">
+            <app-toggle-button name="My Purchases" (click)="setFilter('my-purchases')" [active]="isFilterActive('my-purchases')" ></app-toggle-button>
+            <app-toggle-button name="My Sales" (click)="setFilter('my-sales')" [active]="isFilterActive('my-sales')" ></app-toggle-button>
+          </div>
+          <div class="filter_container">
+            <div class="filter_btn btn color_btn" (click)="toggleFilterMaster()">
+                <mat-icon svgIcon="filter" class="icon"></mat-icon>
+                <span>All Filters</span>
             </div>
-            <div class="filter_container">
-              <div class="filter_btn btn color_btn" (click)="toggleFilterMaster()">
-                  <mat-icon svgIcon="filter" class="icon"></mat-icon>
-                  <span>All Filters</span>
-              </div>
-              <div class="filter_master" *ngIf="showFilterMaster">
-                <h3>Filters</h3>
-                <div class="list">
-                  <div class="line">
-                    <div class="title">Stage</div>
-                    <div class="elems">
-                        <app-toggle-button name="Adult" (click)="clickFilter('stage-adult')" [active]="isFilterActive('stage-adult')" ></app-toggle-button>
-                        <app-toggle-button name="Petite" (click)="clickFilter('stage-petite')" [active]="isFilterActive('stage-petite')" ></app-toggle-button>
-                        <app-toggle-button name="Larva" (click)="clickFilter('stage-larva')" [active]="isFilterActive('stage-larva')" ></app-toggle-button>
-                        <app-toggle-button name="Egg" (click)="clickFilter('stage-egg')" [active]="isFilterActive('stage-egg')" ></app-toggle-button>
-                    </div>
+            <div class="filter_master" *ngIf="showFilterMaster">
+              <h3>Filters</h3>
+              <div class="list">
+                <div class="line">
+                  <div class="title">Stage</div>
+                  <div class="elems">
+                      <app-toggle-button name="Adult" (click)="setFilter('stage-adult')" [active]="isFilterActive('stage-adult')" ></app-toggle-button>
+                      <app-toggle-button name="Petite" (click)="setFilter('stage-petite')" [active]="isFilterActive('stage-petite')" ></app-toggle-button>
+                      <app-toggle-button name="Larva" (click)="setFilter('stage-larva')" [active]="isFilterActive('stage-larva')" ></app-toggle-button>
+                      <app-toggle-button name="Egg" (click)="setFilter('stage-egg')" [active]="isFilterActive('stage-egg')" ></app-toggle-button>
                   </div>
-                  <div class="line">
-                    <div class="title">Pureness</div>
-                    <div class="elems">
-                        <app-toggle-button name="1" (click)="clickFilter('pureness-1')" [active]="isFilterActive('pureness-1')" ></app-toggle-button>
-                        <app-toggle-button name="2" (click)="clickFilter('pureness-2')" [active]="isFilterActive('pureness-2')" ></app-toggle-button>
-                        <app-toggle-button name="3" (click)="clickFilter('pureness-3')" [active]="isFilterActive('pureness-3')" ></app-toggle-button>
-                        <app-toggle-button name="4" (click)="clickFilter('pureness-4')" [active]="isFilterActive('pureness-4')" ></app-toggle-button>
-                        <app-toggle-button name="5" (click)="clickFilter('pureness-5')" [active]="isFilterActive('pureness-5')" ></app-toggle-button>
-                        <app-toggle-button name="6" (click)="clickFilter('pureness-6')" [active]="isFilterActive('pureness-6')" ></app-toggle-button>
-                    </div>
-                  </div>
-                  <div class="line">
-                    <div class="title">Title</div>
-                    <div class="elems">
-                        <app-toggle-button name="Origin" (click)="clickFilter('title-origin')" [active]="isFilterActive('title-origin')" ></app-toggle-button>
-                    </div>
-                  </div>
-                  <div class="line">
-                      <div class="title">Class</div>
-                      <div class="elems">
-                          <app-toggle-button name="" imgpath="assets/icons/classes/beast_class.png"    imgpathActive="assets/icons/classes/white/beast_class_w.png" (click)="clickFilter('class-beast')" [active]="isFilterActive('class-beast')" ></app-toggle-button>
-                          <app-toggle-button name="" imgpath="assets/icons/classes/aquatic_class.png"  imgpathActive="assets/icons/classes/white/aquatic_class_w.png" (click)="clickFilter('class-aquatic')" [active]="isFilterActive('class-aquatic')" ></app-toggle-button>
-                          <app-toggle-button name="" imgpath="assets/icons/classes/plant_class.png"    imgpathActive="assets/icons/classes/white/plant_class_w.png" (click)="clickFilter('class-plant')" [active]="isFilterActive('class-plant')" ></app-toggle-button>
-                          <app-toggle-button name="" imgpath="assets/icons/classes/bird_class.png"     imgpathActive="assets/icons/classes/white/bird_class_w.png" (click)="clickFilter('class-bird')" [active]="isFilterActive('class-bird')" ></app-toggle-button>
-                          <app-toggle-button name="" imgpath="assets/icons/classes/bug_class.png"      imgpathActive="assets/icons/classes/white/bug_class_w.png"(click)="clickFilter('class-bug')" [active]="isFilterActive('class-bug')" ></app-toggle-button>
-                          <app-toggle-button name="" imgpath="assets/icons/classes/reptile_class.png"  imgpathActive="assets/icons/classes/white/reptile_class_w.png" (click)="clickFilter('class-reptile')" [active]="isFilterActive('class-reptile')" ></app-toggle-button>
-                          <app-toggle-button name="" imgpath="assets/icons/classes/nocturnal_class.png"imgpathActive="assets/icons/classes/white/nocturnal_class_w.png" (click)="clickFilter('class-nocturnal')" [active]="isFilterActive('class-nocturnal')" ></app-toggle-button>
-                          <app-toggle-button name="" imgpath="assets/icons/classes/cyborg_class.png"   imgpathActive="assets/icons/classes/white/cyborg_class_w.png"(click)="clickFilter('class-robotic')" [active]="isFilterActive('class-robotic')" ></app-toggle-button>
-                          <app-toggle-button name="" imgpath="assets/icons/classes/arctic_class.png"   imgpathActive="assets/icons/classes/white/arctic_class_w.png" (click)="clickFilter('class-arctic')" [active]="isFilterActive('class-arctic')" ></app-toggle-button>
-                      </div>
-                    </div>
                 </div>
+                <div class="line">
+                  <div class="title">Pureness</div>
+                  <div class="elems">
+                      <app-toggle-button name="1" (click)="setFilter('pureness-1')" [active]="isFilterActive('pureness-1')" ></app-toggle-button>
+                      <app-toggle-button name="2" (click)="setFilter('pureness-2')" [active]="isFilterActive('pureness-2')" ></app-toggle-button>
+                      <app-toggle-button name="3" (click)="setFilter('pureness-3')" [active]="isFilterActive('pureness-3')" ></app-toggle-button>
+                      <app-toggle-button name="4" (click)="setFilter('pureness-4')" [active]="isFilterActive('pureness-4')" ></app-toggle-button>
+                      <app-toggle-button name="5" (click)="setFilter('pureness-5')" [active]="isFilterActive('pureness-5')" ></app-toggle-button>
+                      <app-toggle-button name="6" (click)="setFilter('pureness-6')" [active]="isFilterActive('pureness-6')" ></app-toggle-button>
+                  </div>
+                </div>
+                <div class="line">
+                  <div class="title">Title</div>
+                  <div class="elems">
+                      <app-toggle-button name="Origin" (click)="setFilter('title-origin')" [active]="isFilterActive('title-origin')" ></app-toggle-button>
+                      <app-toggle-button name="MEO Corp" (click)="setFilter('title-meocorp')" [active]="isFilterActive('title-meocorp')" ></app-toggle-button>
+                  </div>
+                </div>
+                <div class="line">
+                    <div class="title">Class</div>
+                    <div class="elems">
+                        <app-toggle-button name="" imgpath="assets/icons/classes/beast_class.png"    imgpathActive="assets/icons/classes/white/beast_class_w.png" (click)="setFilter('class-beast')" [active]="isFilterActive('class-beast')" ></app-toggle-button>
+                        <app-toggle-button name="" imgpath="assets/icons/classes/aquatic_class.png"  imgpathActive="assets/icons/classes/white/aquatic_class_w.png" (click)="setFilter('class-aquatic')" [active]="isFilterActive('class-aquatic')" ></app-toggle-button>
+                        <app-toggle-button name="" imgpath="assets/icons/classes/plant_class.png"    imgpathActive="assets/icons/classes/white/plant_class_w.png" (click)="setFilter('class-plant')" [active]="isFilterActive('class-plant')" ></app-toggle-button>
+                        <app-toggle-button name="" imgpath="assets/icons/classes/bird_class.png"     imgpathActive="assets/icons/classes/white/bird_class_w.png" (click)="setFilter('class-bird')" [active]="isFilterActive('class-bird')" ></app-toggle-button>
+                        <app-toggle-button name="" imgpath="assets/icons/classes/bug_class.png"      imgpathActive="assets/icons/classes/white/bug_class_w.png"(click)="setFilter('class-bug')" [active]="isFilterActive('class-bug')" ></app-toggle-button>
+                        <app-toggle-button name="" imgpath="assets/icons/classes/reptile_class.png"  imgpathActive="assets/icons/classes/white/reptile_class_w.png" (click)="setFilter('class-reptile')" [active]="isFilterActive('class-reptile')" ></app-toggle-button>
+                        <app-toggle-button name="" imgpath="assets/icons/classes/nocturnal_class.png"imgpathActive="assets/icons/classes/white/nocturnal_class_w.png" (click)="setFilter('class-nocturnal')" [active]="isFilterActive('class-nocturnal')" ></app-toggle-button>
+                        <app-toggle-button name="" imgpath="assets/icons/classes/cyborg_class.png"   imgpathActive="assets/icons/classes/white/cyborg_class_w.png"(click)="setFilter('class-robotic')" [active]="isFilterActive('class-robotic')" ></app-toggle-button>
+                        <app-toggle-button name="" imgpath="assets/icons/classes/arctic_class.png"   imgpathActive="assets/icons/classes/white/arctic_class_w.png" (click)="setFilter('class-arctic')" [active]="isFilterActive('class-arctic')" ></app-toggle-button>
+                    </div>
+                  </div>
+                  <div class="line" *ngIf="web3Supported">
+                    <div class="title">My</div>
+                    <div class="elems">
+                        <app-toggle-button name="My Purchases" (click)="setFilter('my-purchases')" [active]="isFilterActive('my-purchases')" ></app-toggle-button>
+                        <app-toggle-button name="My Sales" (click)="setFilter('my-sales')" [active]="isFilterActive('my-sales')" ></app-toggle-button>
+                    </div>
+                  </div>
+                  <div class="line">
+                    <div class="title">Buyer</div>
+                    <div class="elems">
+                      <!--<div class="search_elem">
+                        <mat-icon svgIcon="search" class="icon"></mat-icon>
+                        <input type="text" >
+                      </div>-->
+                      <app-search-field (search)="searchFor('buyer', $event)" placeholder="Search Address"></app-search-field>
+                    </div>
+                  </div>
+                  <div class="line">
+                    <div class="title">Seller</div>
+                    <div class="elems">
+                      <!--
+                      <div class="search_elem">
+                        <mat-icon svgIcon="search" class="icon"></mat-icon>
+                        <input type="text" >
+                      </div>-->
+                      <app-search-field (search)="searchFor('seller', $event)" placeholder="Search Address"></app-search-field>
+                    </div>
+                  </div>
               </div>
             </div>
           </div>
-      </div>
+        </div>
       <div class="stats_bar" *ngIf="false">
         <div class="total_eth stat">
           <div class="name">Total Volume: </div><div class="val">{{round(weiToEth(axie_sales_totalEth), 1)}} ETH</div>
@@ -173,15 +202,19 @@
               </div>
               <div class="buyer_field field">
                 <b class="label">Buyer:</b> 
-                <a href="https://etherscan.io/address/{{sale.buyer}}" target="_blank" title="{{sale.buyer}}" class="link overflow">{{sale.buyer}}</a>
+                <app-copy-text copytext="{{sale.buyer}}">
+                  <a href="https://etherscan.io/address/{{sale.buyer}}" target="_blank" title="{{sale.buyer}}" class="link overflow">{{sale.buyer}}</a>
+                </app-copy-text>
               </div>
               <div class="seller_field field">
                 <b class="label">Seller:</b> 
-                <a href="https://etherscan.io/address/{{sale.seller}}" target="_blank" title="{{sale.seller}}" class="link overflow">{{sale.seller}}</a>
+                <app-copy-text copytext="{{sale.seller}}">
+                  <a href="https://etherscan.io/address/{{sale.seller}}" target="_blank" title="{{sale.seller}}" class="link overflow">{{sale.seller}}</a>
+                </app-copy-text>
               </div>
               <div class="tx_field field">
                 <b class="label">TX:</b>
-                <a href="https://etherscan.io/tx/{{sale.tx}}" target="_blank" class="link overflow" title="{{sale.tx}}">{{sale.tx}}</a>
+                <a href="https://etherscan.io/tx/{{sale.tx}}" target="_blank" class="link overflow" title="{{sale.tx}}">View Transaction</a>
               </div>
             </div>
             <div class="xa_stats">

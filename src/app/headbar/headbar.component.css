@@ -13,7 +13,10 @@
 
 .linkgroup { margin-left: 15px; display: flex; height: 100%; align-items: center; align-items: center; } 
 .linkgroup .elem { display:flex; align-items: center; height: 100%; border-bottom: 3px solid #515151; height: 100%; font-size: 14px; padding:0 15px; text-transform: uppercase; color:#515151; font-weight: bold; } 
-.linkgroup .elem { border-color: #a146ef; color:#a146ef; } 
+.linkgroup .elem { border-bottom: 3px solid #a5a5a500; color:#868686; } 
+.linkgroup .elem.active { border-color: #a146ef; color:#a146ef; } 
+
+
 .menuicon { margin-right: 15px; color: #515151; user-select: none; cursor: pointer; position: relative; font-weight: bold; padding: 6px 7px; border-radius: 3px; } 
 .menuicon .menu { display: none; } 
 .menuicon .icon { opacity: 0.5; } 
@@ -31,7 +34,7 @@
 
 
  @media only screen and (max-width : 800px) { /*mo*/
-
+.menu li a { padding:14px 20px; } 
 .linkgroup { display: none; } 
  }
 

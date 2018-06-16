@@ -1,4 +1,5 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css"; 
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,400i,500,700'); 
 
 /* KIKO RESET */
 html { height:100%; } 
@@ -23,6 +24,10 @@ transition: all 0.2s ease; }
 /* CUSTOM */
 body { background:#efefef; } 
 .main { margin-top:20px; margin-bottom: 400px!important; width:1000px; } 
+
+app-sortable-header .sortable-header { display:flex; align-items: center; } 
+app-sortable-header .state_on:after { content:""; margin-left:5px; background-size:16px; width:16px; height:16px; background-image:url("assets/icons/general/arrow-up.svg"); } 
+app-sortable-header .state_off:after { content:""; margin-left:5px; background-size:16px; width:16px; height:16px; background-image:url("assets/icons/general/arrow-down.svg"); } 
 
 /* stickyfooter */
 app-root { width:100%; height: 100%; display: flex; flex-direction: column; } 

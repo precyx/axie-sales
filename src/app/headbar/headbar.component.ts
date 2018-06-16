@@ -27,4 +27,9 @@ export class HeadbarComponent implements OnInit {
     $(".menuicon").toggleClass("active");
   }
 
+  clickNaviPoint(e){
+    //$(".mainnav .linkgroup .elem").removeClass("active");
+    //$(e.currentTarget).addClass("active");
+  }
+
 }

@@ -1,0 +1,7 @@
+<div class="container">
+  <ng-content></ng-content>
+  <div class="copy_btn" title="Copy" (click)="copyToClipboard()">
+    <div class="msg" *ngIf="msgVisible">Copied.</div>
+    <mat-icon svgIcon="copy" class="icon"></mat-icon>
+  </div>
+</div>

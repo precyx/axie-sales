@@ -5,6 +5,7 @@ import { FormsModule }                from '@angular/forms';
 import { AppComponent }               from './app.component';
 import { AppRoutingModule }           from './/app-routing.module';
 import { AxieSalesComponent }         from './axie-sales/axie-sales.component';
+import { AxieLabComponent }           from './axie-lab/axie-lab.component';
 import { HeadbarComponent }           from './headbar/headbar.component';
 import { FooterComponent }            from './footer/footer.component';
 import { ToggleButtonComponent }      from './ui/toggle-button/toggle-button.component';
@@ -59,6 +60,9 @@ import { AngularFirestoreModule }     from 'angularfire2/firestore';
 import { AngularFireStorageModule }   from 'angularfire2/storage';
 import { AngularFireAuthModule }      from 'angularfire2/auth';
 import { environment }                from '../environments/environment';
+import { SortableHeaderComponent } from './ui/sortable-header/sortable-header.component';
+import { SearchFieldComponent } from './ui/search-field/search-field.component';
+import { CopyTextComponent } from './ui/copy-text/copy-text.component';
 
 
 @NgModule({
@@ -98,7 +102,7 @@ import { environment }                from '../environments/environment';
     MatToolbarModule,
     MatTooltipModule,
     MatTreeModule,
-  ]
+  ],
 })
 export class MaterialModule { }
 
@@ -106,12 +110,16 @@ export class MaterialModule { }
   declarations: [
     AppComponent,
     AxieSalesComponent,
+    AxieLabComponent,
     HeadbarComponent,
     FooterComponent,
     ToggleButtonComponent,
     BlockExplorerComponent,
     OrderBy,
-    AxieAdoptedComponent
+    AxieAdoptedComponent,
+    SortableHeaderComponent,
+    SearchFieldComponent,
+    CopyTextComponent
   ],
   imports: [
     BrowserModule,

@@ -5,12 +5,15 @@
         <div class="menuicon" (click)="toggleMenu($event)">
           <mat-icon svgIcon="menu" class="icon"></mat-icon>
           <ul class="menu">
+            <li><a href="/axie-marketplace">Marketplace</a></li>
+            <li><a href="/axie-egglab">Lab</a></li>
             <li><a target="_blank" href="https://axie-sales-v1-6.kikoweb.ch">Axie Sales V 1.6.0 (previous)</a></li>
           </ul>
         </div>
 
         <div class="linkgroup">
-          <div routerLink="/" class="elem home_btn btn">Axie Sales</div>
+          <div routerLink="/axie-marketplace" routerLinkActive="active" class="elem home_btn btn">Marketplace</div>
+          <div routerLink="/axie-egglab" routerLinkActive="active" class="elem home_btn btn">Lab</div>
         </div>
 
     </div>

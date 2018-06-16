@@ -110,6 +110,7 @@ export class AxieSalesComponent implements OnInit {
 
   /* web3 */
   web3Supported:boolean;
+  metamaskUnlocked:boolean; //@todo
 
 
   /* Loading Spinner */
@@ -132,6 +133,7 @@ export class AxieSalesComponent implements OnInit {
     iconRegistry.addSvgIcon('first-page', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/first-page.svg'));
     iconRegistry.addSvgIcon('filter', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/filter.svg'));
     iconRegistry.addSvgIcon('close', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/close.svg'));
+    iconRegistry.addSvgIcon('copy', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/copy.svg'));
     this.DB = db.firestore;
   }
 
@@ -231,9 +233,9 @@ export class AxieSalesComponent implements OnInit {
   /**
    * handles all filter buttons and sets appropriate query options
    * @event {Click} click on any filter
-   * @param filter 
+   * @param filter {String} filtername e.g. 'stage-egg', 'pureness-4', 'class-bug'
    */
-  clickFilter(filter:string){
+  setFilter(filter:string){
     if(!this.current_filtering[filter]) {
       this.current_filtering = {};
       this.current_ordering = {};
@@ -256,6 +258,7 @@ export class AxieSalesComponent implements OnInit {
         case "pureness-5"     : where = {"prop" : "pureness", "val" : 5}; break;
         case "pureness-6"     : where = {"prop" : "pureness", "val" : 6}; break;
         case "title-origin"   : where = {"prop" : "title", "val" : "Origin"}; break;
+        case "title-meocorp"  : where = {"prop" : "title", "val" : "MEO Corp"}; break;
         case "class-beast"    : where = {"prop" : "class", "val" : "beast"}; break;
         case "class-aquatic"  : where = {"prop" : "class", "val" : "aquatic"}; break;
         case "class-plant"    : where = {"prop" : "class", "val" : "plant"}; break;
@@ -292,6 +295,32 @@ export class AxieSalesComponent implements OnInit {
     this.showFilterMaster = !this.showFilterMaster;
   }
 
+
+  /**
+   * Search prop
+   * @param prop {String} 
+   * @param evt 
+   */
+  searchFor(prop:string, val:string){
+    this.disable_single_sortings = true;
+    if(prop && val){
+      console.log(prop, val);
+      var where = {"prop": prop, "val": val};
+      this.setQueryOptions({"where":where, "sorting":null, "orderBy":null, "startAfter":null});
+    }
+    else this.resetQueryOptions();
+    //
+    this.loadAxiesFromDB();
+  }
+
+  /**
+   * Copies string to clipboard
+   * @param str {String} string to copy
+   */
+  copyToClipboard(str:string){
+    console.log("copy", str);
+    document.execCommand(str);
+  }
 
 
   /**
@@ -529,7 +558,7 @@ export class AxieSalesComponent implements OnInit {
           if(res) resolve(res);
         });
       }).then(function(events:any){ //getTransaction
-        //console.log("evt",events);
+        console.log("evt",events);
         var promises = [];
         for(let i = 0; i < events.length; i++){
           // skip event if equal to last scanned event
@@ -843,10 +872,10 @@ export class AxieSalesComponent implements OnInit {
   /**
    * @todo
    * @param _params
-   * @param _ordering {Object} ordering for example {"prop": "price", "mode": "asc"}
-   * @param _where {Object} {"prop": "pureness", "val": 3}
-   * @param _startAfter {Object} data cursor start 
-   * @param _reverseOrder {boolean} reverses ordering if true 
+   * @param orderBy {Object} ordering for example {"prop": "price", "mode": "asc"}
+   * @param where {Object} {"prop": "pureness", "val": 3}
+   * @param startAfter {Object} data cursor start 
+   * @param limit {Number} limit records 
    */
   setQueryOptions(_params:any = {}){
     if('orderBy' in _params)      this.queryOptions.orderBy     = _params["orderBy"];
@@ -854,6 +883,16 @@ export class AxieSalesComponent implements OnInit {
     if('startAfter' in _params)   this.queryOptions.startAfter  = _params["startAfter"];
     if('limit' in _params)        this.queryOptions.limit       = _params["limit"];
     //console.log(this.setQueryOptions);
+  }
+
+  /**
+   * Resets query options by setting "where", "sorting", "orderBy" to NULL
+   */
+  resetQueryOptions(){
+    this.disable_single_sortings = false;
+    this.current_filtering = {};
+    this.current_ordering = {};
+    this.setQueryOptions({"where" : null, "sorting":null, "startAfter": null, "orderBy": null});
   }
   
 

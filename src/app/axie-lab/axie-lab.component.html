@@ -1,0 +1,76 @@
+<div class="loading_area" *ngIf="data_loading">
+    <div class="spinner_container">
+      <mat-progress-spinner 
+      class="spinner" 
+      [color]="spinnerColor" 
+      [mode]="spinnerMode"
+      [diameter]="spinnerDiameter">
+      </mat-progress-spinner>
+      <div class="loading-text"></div>
+    </div>
+  </div>
+
+
+<div id="screen_eggsale" *ngIf="!data_loading">
+  <div class="titlebar">
+    <h1><span class="title">Egg Lab Sales</span> <span class="count">{{egg_sales.length}}</span></h1>
+  </div>
+  <div class="actionbar">
+    <div class="graph_container">
+      <div (click)="toggleBuyerStats()" class="btn icon_btn graph_btn">
+          <mat-icon svgIcon="purche" class="icon"></mat-icon>
+      </div>
+      <div class="graph" *ngIf="showBuyerStats">
+        <div class="bar">
+          <p class="title">Egg Buyers <span class="count">{{unique_addresses.length}}</span></p>
+          <div (click)="toggleBuyerStats()" class="closer">
+              <mat-icon svgIcon="close" class="icon"></mat-icon>
+          </div>
+        </div>
+        <div class="addresses">
+          <div class="header">
+            <div class="field header_field addr">Address</div>
+            <!-- <div (click)="sortByProp(unique_addresses, 'total_eth')" class="field header_field totaleth">Total ETH</div> -->
+            <app-sortable-header (toggle)="sortByProp(unique_addresses, 'total_eth', $event)" class="field header_field totaleth">Total ETH </app-sortable-header>
+            <!-- <div (click)="sortByProp(unique_addresses, 'num_eggs')" class="field header_field numeggs">Num Eggs</div> -->
+            <app-sortable-header (toggle)="sortByProp(unique_addresses, 'num_eggs', $event)" class="field header_field numeggs">Num Eggs </app-sortable-header>
+          </div>
+          <div *ngFor="let elem of unique_addresses" class="address">
+            <div class="field addr">
+              <a target="_blank" href="https://axieinfinity.com/profile/{{elem.address}}" class="val">{{elem.address}}</a>
+            </div>
+            <div class="field totaleth">{{round(elem.total_eth, 3)}} ETH</div>
+            <div class="field numeggs">
+              <span class="txt">{{elem.num_eggs}}</span>
+              <div class="e_pics">
+                <span *ngFor="let a of arrayOne(elem.num_eggs)" class="p"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="eggsales" >
+    <div class="header">
+      <!--<div (click)="sortByProp(egg_sales, 'price')" class="field header_field price">Price <span class="count">{{round(total_eth_volume, 2)}} ETH</span></div>-->
+      <!-- <div (click)="sortByProp(egg_sales, 'time')" class="field header_field time">Time</div> -->
+      <app-sortable-header (toggle)="sortByProp(egg_sales, 'price', $event)" class="field header_field price">
+        Price <span class="total_eth_volume">T: {{round(total_eth_volume, 2)}} ETH</span>
+      </app-sortable-header>  
+      <app-sortable-header (toggle)="sortByProp(egg_sales, 'time', $event)" class="field header_field time">Time </app-sortable-header>
+      <app-sortable-header (toggle)="sortByProp(egg_sales, 'index', $event)" class="field header_field egg_index">Egg Index </app-sortable-header>
+      <div class="field header_field buyer">Buyer</div>
+      <div class="field header_field tx">Transaction</div>
+    </div>
+    <div *ngFor="let sale of egg_sales" class="eggsale">
+      <div class="field price">{{round(sale.price, 3)}} ETH</div>
+      <div class="field time">{{getTimeAgo(sale.time)}}</div>
+      <div class="field egg_index">{{sale.index}}</div>
+      <a target="_blank" class="field buyer" href="https://etherscan.io/address/{{sale.buyer}}">{{sale.buyer}}</a>
+      <a target="_blank" class="field tx" href="https://etherscan.io/tx/{{sale.tx}}">TX</a>
+    </div>
+  </div>
+
+</div>
