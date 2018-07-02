@@ -1,0 +1,17 @@
+canvas {
+    box-shadow: 0 2px 2px #c1c1c1;
+    width: 670px;
+    z-index: 1000;
+    top: 0px;
+
+    height: 410px;
+    position: relative;
+}
+
+.btn {
+    cursor: pointer;
+}
+
+.clear_btn {
+    user-select: none;
+}

@@ -1,0 +1,79 @@
+h1 {width:100%;}
+
+.artboard {
+    padding:100px;
+    background:white; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position:relative;
+}
+
+
+app-artboard {
+    position: absolute;
+}
+
+
+.axie-body  {
+    position: relative;
+    width: 350px;
+    height: 260px;
+    user-select: none;
+    .axie-body-outline {
+        width:350px;
+        position: absolute;;
+    }
+    .axie-body-fill{
+        width:350px;
+        position: absolute;;
+    }
+    .axie-body-grid{
+        width:350px;
+        position: absolute;
+        opacity: 0.4;
+    }
+}
+
+.options {
+    position: absolute;
+    top: 60px;
+    left: 70px;
+}
+
+.body-colors {
+    width: 200px;
+    display: flex;
+    flex-flow: wrap;
+    margin-right: 50px;
+    position:absolute; 
+    left:80px;
+    .color {
+        border-radius: 8px;
+        cursor: pointer;
+        width:35px;
+        height:35px;
+        background:grey;
+        border:5px solid white;
+        &:hover {opacity: 0.7;}
+    }
+}
+
+
+.toolbar {
+    position: absolute;
+    right:50px; 
+    top:50px;
+
+    .tool {
+        display:flex; 
+        padding:15px;
+        opacity: 0.8;
+        cursor: pointer;
+        border-radius: 5px;
+        background: #f7f7f7;
+        &:hover {
+            opacity: 0.5;;
+        }
+    }
+}

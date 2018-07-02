@@ -1,0 +1,179 @@
+
+<div class="titlebar">
+  <h1>Inspector</h1>
+</div>
+
+<div class="search_container">
+    <input type="number"  placeholder="Search ID" [(ngModel)]="searchstring">
+    <button class="color_btn" (click)="searchAxie()">Inspect</button>
+</div>
+
+<div class="bar_level3 bar_spread">
+  <div class="center">
+    <div class="genedelimiter_container">
+        <h2>Gene Delimiter</h2>
+        <input min="1" max="32" type="number" class="gene_delimiter" placeholder="delimitter value" [(ngModel)]="gene_delimiter">
+        <button class="color_btn secondary change_btn" (click)="changeGeneDelimiter()">Change</button>
+      </div>
+
+      <div class="view_mode_container">
+        <h2>View Mode</h2>
+        <div class="buttons">
+          <div class="btn stream_view" (click)="setViewMode('list')">
+            <mat-icon class="icon" svgIcon="view-stream"></mat-icon>
+          </div>
+          <div class="btn module_view" (click)="setViewMode('module')">
+            <mat-icon class="icon" svgIcon="view-module"></mat-icon>
+          </div>
+        </div>
+      </div>
+      
+      <div class="comparison_container">
+        <h2>Compare <span class="count">{{axies_to_compare.length}}</span></h2>
+          <div class="line">
+            <div class="axies">
+              <div class="axie class_{{axie.axieAPI.class}}" *ngFor="let axie of axies_to_compare" (click)="removeAxieFromComparator(axie.id)">
+                #{{axie.id}}
+              </div>
+            </div>
+            <div class="color_btn small secondary" *ngIf="axies_to_compare.length" (click)="toggleComparator()">
+              Compare
+            </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+<div class="comparator" *ngIf="showComparator && axies_to_compare.length">
+  <div class="close_btn" (click)="closeComparator();">
+    <mat-icon class="icon" svgIcon="close"></mat-icon>
+  </div>
+  <div class="center">
+    <div class="titlebar">
+      <h2>Comparator <span class="count">{{axies_to_compare.length}}</span></h2>
+      <div class="axie_images">
+        <div class="img" *ngFor="let axie of axies_to_compare" (click)="removeAxieFromComparator(axie.id)">
+          <img src="{{axie.img}}">
+        </div>
+      </div>
+    </div>
+    <div class="axies">
+
+      <ng-container *ngIf="false">
+        <div class="axie" *ngFor="let axie of axies_to_compare">
+            <div class="id_field">#{{axie.id}}</div>
+            <div class="gene_field">
+              <div class="split_genes">
+                <div class="split_gene" *ngFor="let splitgene of axie.binaries">
+                  <div class="binary">{{splitgene}}</div>
+                  <div class="decimal">{{binaryToDecimal(splitgene)}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </ng-container>
+
+      <div class="axie" *ngIf="compareResult && compareResult.binaries">
+        <div class="id_field"></div>
+        <div class="gene_block">
+          <div class="gene_field">
+            <div class="split_genes">
+              <div class="split_gene mark_{{getGeneStructure(splitgene)}}" *ngFor="let splitgene of compareResult.binaries">
+                <div class="binary">{{splitgene}}</div>
+                <div class="decimal">{{binaryToDecimal(splitgene)}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="class_block">
+          <div class="class_field field val_{{compareResult.axieAPI.class}}">
+              <app-axie-tag color="{{getClassColor(compareResult.axieAPI.class)}}">
+                {{compareResult.axieAPI.class}}
+              </app-axie-tag>
+            </div>
+            <div class="title_field field val_{{compareResult.axieAPI.title}}">
+              <app-axie-tag color="#ff3d55">
+                {{compareResult.axieAPI.title}}
+              </app-axie-tag>
+            </div>
+        </div>
+        <div class="parts_block">
+          <div class="parts">
+            <div class="part" *ngFor="let part of compareResult.axieAPI.parts; let i = index;">
+              <div class="img">
+                <app-axie-part-icon src="{{parts[i].img_url}}" color="{{getClassColor(part.class)}}"></app-axie-part-icon>
+              </div>
+              <div [style.color]="getClassColor(part.class)" class="name val_{{part.name}}">{{part.name}}</div>
+              <div [style.color]="getClassColor(part.class)" class="class val_{{part.class}}">{{part.class}}</div>
+              <div class="mystic val_{{part.mystic}}">m_{{part.mystic}}</div>
+              <div class="region val_{{part.region}}">{{part.region}}</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    
+    </div>
+  </div>
+</div> <!-- end comparator -->
+
+
+
+<div class="content view_mode_{{view_mode}}">
+
+  <div class="genes">
+    <div class="gene" *ngFor="let gene of genes">
+      <div class="id">#{{gene.id}}</div>
+      <div class="img_field">
+        <img class="img" src="{{gene.img}}">
+      </div>
+      <div class="gene_field">
+        <div class="gene_binary">
+          <div class="split_genes">
+            <div class="split_gene" *ngFor="let splitgene of gene.binaries">
+              <div class="binary">{{splitgene}}</div>
+              <div class="decimal">{{binaryToDecimal(splitgene)}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="server_data_field" *ngIf="gene.axieAPI">
+
+        <div class="class_line">
+          <div class="class_field class_{{gene.axieAPI.class}}" >
+              <div class="inner">
+                {{gene.axieAPI.class}}
+              </div>
+            </div>
+            <div class="title_field" >
+              <div class="inner">
+                {{gene.axieAPI.title}}
+              </div>
+            </div>
+        </div>
+        <div class="parts_field">
+          <div class="parts">
+            <div class="part class_{{part.class}} mystic_{{part.mystic}}" *ngFor="let part of gene.axieAPI.parts">
+              <div class="text">
+                {{part.name}}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- end server data field -->
+
+      <div class="actionbar">
+        <div class="compare_btn btn" (click)="addAxieToComparison(gene)">
+          <mat-icon class="icon" svgIcon="add-to-stack"></mat-icon>
+        </div>
+        <div class="remove_btn btn" (click)="removeAxie(gene.id)">
+            <mat-icon class="icon" svgIcon="close"></mat-icon>
+          </div>
+      </div>
+    </div> <!-- end gene-->
+  </div>
+
+</div> <!-- end content-->

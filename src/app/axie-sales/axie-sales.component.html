@@ -18,6 +18,10 @@
           <div class="num_of_sales"> 
             <h2 class="text">Showing: <span class="sll">{{axie_sales.length}} Sales</span></h2> 
           </div>
+          
+      </div>
+      <div class="subbar">
+          <div class="total_volume">Total Volume: {{round(weiToEth(sales_total_eth), 2)}} ETH</div>
       </div>
       <div class="filtergroup">
           <div class="top_filters" *ngIf="web3Supported">
@@ -81,24 +85,21 @@
                     </div>
                   </div>
                   <div class="line">
+                    <div class="title">ID</div>
+                    <div class="elems">
+                      <app-search-field (search)="searchFor('axie_id', +$event)" placeholder="Search ID"></app-search-field>
+                    </div>
+                  </div>
+                  <div class="line">
                     <div class="title">Buyer</div>
                     <div class="elems">
-                      <!--<div class="search_elem">
-                        <mat-icon svgIcon="search" class="icon"></mat-icon>
-                        <input type="text" >
-                      </div>-->
-                      <app-search-field (search)="searchFor('buyer', $event)" placeholder="Search Address"></app-search-field>
+                      <app-search-field (search)="searchFor('buyer', $event.toLowerCase())" placeholder="Search Buyer Address"></app-search-field>
                     </div>
                   </div>
                   <div class="line">
                     <div class="title">Seller</div>
                     <div class="elems">
-                      <!--
-                      <div class="search_elem">
-                        <mat-icon svgIcon="search" class="icon"></mat-icon>
-                        <input type="text" >
-                      </div>-->
-                      <app-search-field (search)="searchFor('seller', $event)" placeholder="Search Address"></app-search-field>
+                      <app-search-field (search)="searchFor('seller', $event.toLowerCase())" placeholder="Search Seller Address"></app-search-field>
                     </div>
                   </div>
               </div>

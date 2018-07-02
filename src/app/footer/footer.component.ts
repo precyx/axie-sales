@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { VERSION } from '@angular/core';
 
+import {VersionManagerService} from '../services/version-manager.service';
+
 declare var web3:any;
 
 @Component({
@@ -13,7 +15,14 @@ export class FooterComponent implements OnInit {
   web3jsversion:string;
   angularversion:string;
 
-  constructor() {}
+  versions:any;
+
+  constructor(
+    private versionManager:VersionManagerService
+  ) {
+    this.versions = versionManager.getVersions();
+    console.log(this.versions.module);
+  }
 
   ngOnInit() {
     if(web3) this.web3jsversion = web3.version.api

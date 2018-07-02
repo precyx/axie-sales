@@ -1,0 +1,46 @@
+
+<div class="titlebar">
+  <h1>Axie Art Studio</h1>
+</div>
+
+<div class="canvas">
+  
+</div>
+
+<div class="artboard">
+
+  <app-artboard>
+  </app-artboard>
+  
+  <div class="body-colors">
+    <div *ngFor="let color of colors"  [ngStyle]="{'background': color.val}" (click)="setColor(color)" class="color">
+      
+    </div>
+  </div>
+  <div class="options">
+    <mat-checkbox [(ngModel)]="enableBodyGrid">Show Grid</mat-checkbox>
+  </div>
+  <div class="axie-body">
+    <div class="icon axie-body-fill" [inlineSVG]="'/assets/img/artstudio/axie_body_fill.svg'"></div>
+    <div *ngIf="enableBodyGrid" class="icon axie-body-grid" [inlineSVG]="'/assets/img/artstudio/axie_body_grid.svg'"></div>
+    <div class="icon axie-body-outline" [inlineSVG]="'/assets/img/artstudio/axie_outline.svg'"></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="tools">
+      <div class="tool">
+        <mat-icon svgIcon="hand" class="icon hand_icon"></mat-icon>
+      </div>
+      <div class="tool">
+        <mat-icon svgIcon="paint-brush" class="icon paint_brush_icon"></mat-icon>
+      </div>
+    </div>
+  </div>
+
+  <div class="layers">
+    <div class="layer">
+      
+    </div>
+  </div>
+</div>
+<div></div>

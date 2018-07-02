@@ -11,6 +11,7 @@ import { FooterComponent }            from './footer/footer.component';
 import { ToggleButtonComponent }      from './ui/toggle-button/toggle-button.component';
 import { BlockExplorerComponent }     from './block-explorer/block-explorer.component';
 import { HttpClientModule }           from '@angular/common/http';
+import { InlineSVGModule }            from 'ng-inline-svg';
 
 import {
   MatAutocompleteModule,
@@ -63,6 +64,12 @@ import { environment }                from '../environments/environment';
 import { SortableHeaderComponent } from './ui/sortable-header/sortable-header.component';
 import { SearchFieldComponent } from './ui/search-field/search-field.component';
 import { CopyTextComponent } from './ui/copy-text/copy-text.component';
+import { AxieArtstudioComponent } from './axie-artstudio/axie-artstudio.component';
+import { CheckboxComponent } from './ui/checkbox/checkbox.component';
+import { ArtboardComponent } from './axie-artstudio/artboard/artboard.component';
+import { AxieInspectorComponent } from './axie-inspector/axie-inspector.component';
+import { AxieTagComponent } from './ui/axie-tag/axie-tag.component';
+import { AxiePartIconComponent } from './ui/axie-part-icon/axie-part-icon.component';
 
 
 @NgModule({
@@ -119,7 +126,13 @@ export class MaterialModule { }
     AxieAdoptedComponent,
     SortableHeaderComponent,
     SearchFieldComponent,
-    CopyTextComponent
+    CopyTextComponent,
+    AxieArtstudioComponent,
+    CheckboxComponent,
+    ArtboardComponent,
+    AxieInspectorComponent,
+    AxieTagComponent,
+    AxiePartIconComponent
   ],
   imports: [
     BrowserModule,
@@ -132,6 +145,8 @@ export class MaterialModule { }
     AngularFireAuthModule,
     AngularFireStorageModule,
     MaterialModule,
+    InlineSVGModule.forRoot(),
+    
   ],
   exports: [
   ],

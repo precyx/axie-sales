@@ -17,6 +17,8 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { FirebaseFirestore } from '@firebase/firestore-types';
 import { QuerySnapshot, CollectionReference } from '@google-cloud/firestore';
 
+import {VersionManagerService} from '../services/version-manager.service';
+
 declare let web3:any;
 declare var $:any;
 declare var await:any;
@@ -85,6 +87,9 @@ export class AxieSalesComponent implements OnInit {
   previous_first_sale:any;
   previous_last_sale:any;
 
+  /* stats */
+  sales_total_eth:number;
+
   /* sorting */
   sorting_var:string = "timestamp";
   current_ordering:object = {"prop": "timestamp", "mode": "desc"};
@@ -125,7 +130,8 @@ export class AxieSalesComponent implements OnInit {
     private http: HttpClient,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
-    private db: AngularFirestore
+    private db: AngularFirestore,
+    private versionManager: VersionManagerService
   ){
     iconRegistry.addSvgIcon('search', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/search.svg'));
     iconRegistry.addSvgIcon('arrow-left', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/arrow-left.svg'));
@@ -135,6 +141,9 @@ export class AxieSalesComponent implements OnInit {
     iconRegistry.addSvgIcon('close', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/close.svg'));
     iconRegistry.addSvgIcon('copy', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/copy.svg'));
     this.DB = db.firestore;
+    //
+    this.versionManager.setVersionName("module", "Axie Sales");
+    this.versionManager.setVersion("module", "2.1.2");
   }
 
   ngOnInit() {
@@ -147,6 +156,7 @@ export class AxieSalesComponent implements OnInit {
     else this.getAxieSales();
     //
     this.loadPaginationData();
+    this.loadTotalVolume();
   }
 
 
@@ -167,6 +177,17 @@ export class AxieSalesComponent implements OnInit {
         //console.log("count", doc.data().count);
         that.axie_total_sales = doc.data().count;
         that.pagination_total_pages = Math.ceil(that.axie_total_sales / that.pagination_sales_per_page);
+        resolve();
+      });
+    });
+  }
+
+  loadTotalVolume(){
+    var that = this;
+    return new Promise(function(resolve, reject){
+      that.DB.doc("sales-metadata/sales-total-eth").get().then((doc)=>{
+        //console.log("count", doc.data().count);
+        that.sales_total_eth = doc.data().value;
         resolve();
       });
     });
@@ -727,11 +748,13 @@ export class AxieSalesComponent implements OnInit {
     };
     // db references
     var salesCountRef = that.DB.doc("sales-metadata/sales-count");
+    var salesTotalEthRef = that.DB.doc("sales-metadata/sales-total-eth");
     var salesLastScannedRef = that.DB.collection("sales-metadata").doc("sales-last-scanned");
     var newSaleRef = that.DB.collection("sales").doc(_tx.transactionHash);
     // sale transaction
     return that.DB.runTransaction(function(transaction) {
-        return transaction.get(salesCountRef).then(function(salesCountDoc) {
+      return transaction.get(salesCountRef).then(function(salesCountDoc) {
+        return transaction.get(salesTotalEthRef).then(function(salesTotalEth) {
           return transaction.get(salesLastScannedRef).then(function(salesLastScanned){
             if (!salesCountDoc.exists) {
               throw "Sales Count does not exist!";
@@ -743,8 +766,8 @@ export class AxieSalesComponent implements OnInit {
             // check #1 if the [current block] is higher than the [last scanned block] 
             // check #2 if [current block] equals last scanned then check if [transaction index] is higher than [last scanned transaction index]
             if(_tx.blockNumber > salesLastScanned.data().block ||
-               _tx.blockNumber == salesLastScanned.data().block &&
-               _tx.tx_index != salesLastScanned.data().transactionIndex) {
+              _tx.blockNumber == salesLastScanned.data().block &&
+              _tx.tx_index != salesLastScanned.data().transactionIndex) {
               // data
               newSaleData.id = salesCountDoc.data().count + 1;
               console.log("sales count: " +salesCountDoc.data().count);
@@ -755,6 +778,10 @@ export class AxieSalesComponent implements OnInit {
               transaction.update(
                 salesCountRef, {
                 count: salesCountDoc.data().count + 1 
+              });
+              transaction.update(
+                salesTotalEthRef, {
+                value: (salesTotalEth.data().value + newSaleData.price) || 0
               });
               transaction.update(
                 salesLastScannedRef, { 
@@ -769,6 +796,7 @@ export class AxieSalesComponent implements OnInit {
             }
           });
         });
+      });
     }).then(function(data) {
       console.log("new sale ADDED ", data);
       that.setAppStatus({"loading": "Syncing Axie: #" + new BigNumber(_tx.tokenId).toNumber()});

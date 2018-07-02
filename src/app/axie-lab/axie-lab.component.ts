@@ -5,6 +5,7 @@ import { BigNumber }         from "bignumber.js";
 
 import {MatIconRegistry} from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
+import { VersionManagerService } from '../services/version-manager.service';
 
 declare let web3:any;
 
@@ -44,9 +45,13 @@ export class AxieLabComponent implements OnInit {
     private timeAgoService:TimeagoService,
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
+    private versionManager:VersionManagerService
   ) { 
     iconRegistry.addSvgIcon('purche', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/purche.svg'));
     iconRegistry.addSvgIcon('close', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/close.svg'));
+    //
+    this.versionManager.setVersionName("module", "Axie Lab");
+    this.versionManager.setVersion("module", "1.1.0");
   }
 
   ngOnInit() {

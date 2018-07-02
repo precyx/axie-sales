@@ -1,0 +1,11 @@
+body {background:pink!important;}
+
+.tag  {
+    background:grey;
+    color:white;
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+    padding: 2px 5px;
+    border-radius: 3px;
+    display: inline-block;
+}

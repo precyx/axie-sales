@@ -1,13 +1,18 @@
 <div class="footer">
-  <div class="block">
+  <div class="block block_a">
     <div class="version elem">
-      <span class="name">Axie Sales</span> <span class="value">2.1.0</span>
+      <span class="name">{{versions.app.name}}</span> <span class="value">{{versions.app.v}}</span>
     </div>
+    <div class="module elem">
+        <span class="name">{{versions.module.name}}</span> <span class="value">{{versions.module.v}}</span>
+    </div>
+  </div>
+  <div class="block">
     <div class="web3js_version elem">
-      <span class="name">Web3js</span><span class="value">{{web3jsversion}}</span>
+      <span class="name">{{versions.web3.name}}</span><span class="value">{{versions.web3.v}}</span>
     </div>
     <div class="angular_version elem">
-      <span class="name">Angular</span><span class="value">{{angularversion}}</span>
+      <span class="name">{{versions.angular.name}}</span><span class="value">{{versions.angular.v}}</span>
     </div>
   </div>
 
