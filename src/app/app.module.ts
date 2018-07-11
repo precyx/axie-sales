@@ -132,7 +132,7 @@ export class MaterialModule { }
     ArtboardComponent,
     AxieInspectorComponent,
     AxieTagComponent,
-    AxiePartIconComponent
+    AxiePartIconComponent,
   ],
   imports: [
     BrowserModule,

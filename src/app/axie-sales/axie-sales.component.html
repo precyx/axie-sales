@@ -28,6 +28,12 @@
             <app-toggle-button name="My Purchases" (click)="setFilter('my-purchases')" [active]="isFilterActive('my-purchases')" ></app-toggle-button>
             <app-toggle-button name="My Sales" (click)="setFilter('my-sales')" [active]="isFilterActive('my-sales')" ></app-toggle-button>
           </div>
+          <div class="export_container" *ngIf="ADVANCED_MODE">
+            <div class="export_btn btn color_btn" (click)="clickExportButton();" [ngClass]="{'disabled' : disable_export_btn}">
+              <mat-icon svgIcon="download" class="icon"></mat-icon>
+              <span>Download CSV</span>
+            </div>
+          </div>
           <div class="filter_container">
             <div class="filter_btn btn color_btn" (click)="toggleFilterMaster()">
                 <mat-icon svgIcon="filter" class="icon"></mat-icon>
@@ -54,6 +60,17 @@
                       <app-toggle-button name="4" (click)="setFilter('pureness-4')" [active]="isFilterActive('pureness-4')" ></app-toggle-button>
                       <app-toggle-button name="5" (click)="setFilter('pureness-5')" [active]="isFilterActive('pureness-5')" ></app-toggle-button>
                       <app-toggle-button name="6" (click)="setFilter('pureness-6')" [active]="isFilterActive('pureness-6')" ></app-toggle-button>
+                  </div>
+                </div>
+                <div class="line">
+                  <div class="title">Mystics</div>
+                  <div class="elems">
+                      <app-toggle-button name="1" (click)="setFilter('mystics-1')" [active]="isFilterActive('mystics-1')" ></app-toggle-button>
+                      <app-toggle-button name="2" (click)="setFilter('mystics-2')" [active]="isFilterActive('mystics-2')" ></app-toggle-button>
+                      <app-toggle-button name="3" (click)="setFilter('mystics-3')" [active]="isFilterActive('mystics-3')" ></app-toggle-button>
+                      <app-toggle-button name="4" (click)="setFilter('mystics-4')" [active]="isFilterActive('mystics-4')" ></app-toggle-button>
+                      <app-toggle-button name="5" (click)="setFilter('mystics-5')" [active]="isFilterActive('mystics-5')" ></app-toggle-button>
+                      <app-toggle-button name="6" (click)="setFilter('mystics-6')" [active]="isFilterActive('mystics-6')" ></app-toggle-button>
                   </div>
                 </div>
                 <div class="line">

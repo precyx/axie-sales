@@ -66,8 +66,8 @@
             <div class="gene_field">
               <div class="split_genes">
                 <div class="split_gene" *ngFor="let splitgene of axie.binaries">
-                  <div class="binary">{{splitgene}}</div>
-                  <div class="decimal">{{binaryToDecimal(splitgene)}}</div>
+                  <div class="binary">{{splitgene.bits}}</div>
+                  <div class="decimal">{{binaryToDecimal(splitgene.bits)}}</div>
                 </div>
               </div>
             </div>
@@ -79,9 +79,10 @@
         <div class="gene_block">
           <div class="gene_field">
             <div class="split_genes">
-              <div class="split_gene mark_{{getGeneStructure(splitgene)}}" *ngFor="let splitgene of compareResult.binaries">
-                <div class="binary">{{splitgene}}</div>
-                <div class="decimal">{{binaryToDecimal(splitgene)}}</div>
+              <div class="split_gene mark_{{getGeneStructure(splitgene.bits)}}" *ngFor="let splitgene of compareResult.binaries">
+                <div class="name" *ngIf="false">{{splitgene.name}}</div>
+                <div class="binary">{{splitgene.bits}}</div>
+                <div class="decimal">{{binaryToDecimal(splitgene.bits)}}</div>
               </div>
             </div>
           </div>
@@ -133,8 +134,9 @@
         <div class="gene_binary">
           <div class="split_genes">
             <div class="split_gene" *ngFor="let splitgene of gene.binaries">
-              <div class="binary">{{splitgene}}</div>
-              <div class="decimal">{{binaryToDecimal(splitgene)}}</div>
+              <div class="name" *ngIf="false">{{splitgene.name}}</div>
+              <div class="binary">{{splitgene.bits}}</div>
+              <div class="decimal">{{binaryToDecimal(splitgene.bits)}}</div>
             </div>
           </div>
         </div>

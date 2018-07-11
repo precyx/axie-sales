@@ -47,6 +47,7 @@ h2 { font-size: 16px; text-align: center; color: #1f1f1f; white-space: nowrap; p
 
 /* Filter Group */
 .filtergroup { display:flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; } 
+.filtergroup .btn {margin-bottom: 10px;}
 
 /* Top Filters */
 .top_filters { display:none; margin-left: 20px; } 
@@ -68,6 +69,11 @@ h2 { font-size: 16px; text-align: center; color: #1f1f1f; white-space: nowrap; p
 .filter_master app-search-field { padding:8px 0; } 
 .filter_master app-search-field input { width:350px!important; } 
 
+/* export container */
+.export_container .export_btn {display: flex; align-items: center; padding: 0px 8px; font-size: 11px; font-weight: normal; color: #000000bd; background: #c1c1c1;}
+.export_container .export_btn:hover { background: #d8d8d8; } 
+.export_container .export_btn .icon { width:16px; margin-right: 5px; } 
+.export_container .export_btn.disabled { opacity: 0.5; cursor: default; user-select: none; pointer-events: none; } 
 /* Statsbar */
 .stats_bar { margin-bottom: 40px; } 
 .stats_bar .stat { display: flex; font-size: 14px; color: black; opacity: 0.5; } 
@@ -282,8 +288,15 @@ h2 { font-size: 16px; text-align: center; color: #1f1f1f; white-space: nowrap; p
  }
 
  @media only screen and (max-width : 400px) { /*so*/
+ .filtergroup {    flex-flow: row;}
+
+ .filter_container  { margin-left: 5px; } 
  .filter_container .filter_btn { width: 35px; height: 35px; padding:0; align-items: center; justify-content: center; } 
  .filter_container .filter_btn span { display: none; } 
  .filter_container .filter_btn .icon { margin:0; } 
  .filter_master { width: 280px; top:45px; } 
+ /* data export */
+ .export_container .export_btn { width: 35px; height: 35px; padding:0; align-items: center; justify-content: center; } 
+ .export_container .export_btn span { display: none; } 
+ .export_container .export_btn .icon { margin:0; } 
  }

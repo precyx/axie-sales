@@ -8,6 +8,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import {Observable} from 'rxjs';
+import {ActivatedRoute} from '@angular/router';
 
 import {TimeagoService} from '../services/timeago.service';
 
@@ -119,9 +120,15 @@ export class AxieSalesComponent implements OnInit {
 
 
   /* Loading Spinner */
-  spinnerColor = "primary";
+  spinnerColor = "#a146ef";
   spinnerMode = "indeterminate";
   spinnerDiameter = 35;
+
+  /* Advanced Mode */
+  ADVANCED_MODE:boolean;
+
+  /* Data Export */
+  disable_export_btn:boolean;
 
 
   constructor(
@@ -131,7 +138,8 @@ export class AxieSalesComponent implements OnInit {
     private iconRegistry: MatIconRegistry,
     private sanitizer: DomSanitizer,
     private db: AngularFirestore,
-    private versionManager: VersionManagerService
+    private versionManager: VersionManagerService,
+    private activatedRoute: ActivatedRoute
   ){
     iconRegistry.addSvgIcon('search', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/search.svg'));
     iconRegistry.addSvgIcon('arrow-left', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/arrow-left.svg'));
@@ -140,10 +148,18 @@ export class AxieSalesComponent implements OnInit {
     iconRegistry.addSvgIcon('filter', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/filter.svg'));
     iconRegistry.addSvgIcon('close', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/close.svg'));
     iconRegistry.addSvgIcon('copy', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/copy.svg'));
+    iconRegistry.addSvgIcon('graph-data', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/graph-data.svg'));
+    iconRegistry.addSvgIcon('file', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/file.svg'));
+    iconRegistry.addSvgIcon('download', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/download.svg'));
     this.DB = db.firestore;
     //
+    this.activatedRoute.queryParams.subscribe(params => {
+        let advanced = params['advanced'];
+        if(advanced) this.ADVANCED_MODE = true; 
+    });
+    //
     this.versionManager.setVersionName("module", "Axie Sales");
-    this.versionManager.setVersion("module", "2.1.2");
+    this.versionManager.setVersion("module", "2.1.4");
   }
 
   ngOnInit() {
@@ -245,7 +261,7 @@ export class AxieSalesComponent implements OnInit {
       //let limit = this.queryOptions["limit"] + this.pagination_sales_per_page || 15;
       //this.setQueryOptions({"limit" : limit});
       this.setQueryOptions({"startAfter": this.previous_last_sale});
-      this.loadAxiesFromDB("APPEND").then((sales)=>{
+      this.loadAxiesFromDB("APPEND").then((sales:any)=>{
         if(sales.docs.length == 0) this.scrolling_end_reached = true;
       })
     }
@@ -278,6 +294,12 @@ export class AxieSalesComponent implements OnInit {
         case "pureness-4"     : where = {"prop" : "pureness", "val" : 4}; break;
         case "pureness-5"     : where = {"prop" : "pureness", "val" : 5}; break;
         case "pureness-6"     : where = {"prop" : "pureness", "val" : 6}; break;
+        case "mystics-1"      : where = {"prop" : "mystic_count", "val" : 1}; break;
+        case "mystics-2"      : where = {"prop" : "mystic_count", "val" : 2}; break;
+        case "mystics-3"      : where = {"prop" : "mystic_count", "val" : 3}; break;
+        case "mystics-4"      : where = {"prop" : "mystic_count", "val" : 4}; break;
+        case "mystics-5"      : where = {"prop" : "mystic_count", "val" : 5}; break;
+        case "mystics-6"      : where = {"prop" : "mystic_count", "val" : 6}; break;
         case "title-origin"   : where = {"prop" : "title", "val" : "Origin"}; break;
         case "title-meocorp"  : where = {"prop" : "title", "val" : "MEO Corp"}; break;
         case "class-beast"    : where = {"prop" : "class", "val" : "beast"}; break;
@@ -926,6 +948,9 @@ export class AxieSalesComponent implements OnInit {
 
   /**
    * loads all Axies from Firebase DB
+   * @param {string} _loadMode 
+   * "RESET" = overrides current displaying sales 
+   * "READ_ONLY" = returns only data without changing view
    * @return {Promise} promise which yields DB result
    */ 
   loadAxiesFromDB(_loadMode:string = "RESET"){
@@ -947,27 +972,38 @@ export class AxieSalesComponent implements OnInit {
       return data;
     }).then(function(data){
       return query.get().then((salesSnap) => {
-        that.previous_first_sale = salesSnap.docs[0];
-        that.previous_last_sale = salesSnap.docs[salesSnap.docs.length-1];
-        //console.log("res", querySnapshot);
-        if(_loadMode == "RESET") that.axie_sales = [];
-        that.axie_sales_totalEth = 0;
-        salesSnap.forEach((sale) => {
-          var additionalProperties = {
-            "detailview" : false
-          };
-          var mySale:any = {...sale.data(), ...additionalProperties};
-          //console.log("sale", mySale);
-          that.axie_sales.push(mySale);
-          that.axie_sales_totalEth += mySale.price;
-        });
-        that.axie_sales_backup = that.axie_sales;
-        that.allAxiesLoadedEvent();
-        console.log("axie sales", that.axie_sales);
-        // end consequence handling
-        if(!_o.startAfter) that.scrolling_end_reached = false; 
+        if(_loadMode != "READONLY"){
+          that.previous_first_sale = salesSnap.docs[0];
+          that.previous_last_sale = salesSnap.docs[salesSnap.docs.length-1];
+          //console.log("res", querySnapshot);
+          if(_loadMode == "RESET") that.axie_sales = [];
+          that.axie_sales_totalEth = 0;
+          salesSnap.forEach((sale) => {
+            var additionalProperties = {
+              "detailview" : false
+            };
+            var mySale:any = {...sale.data(), ...additionalProperties};
+            //console.log("sale", mySale);
+            that.axie_sales.push(mySale);
+            that.axie_sales_totalEth += mySale.price;
+          });
+          that.axie_sales_backup = that.axie_sales;
+          console.log("axie sales", that.axie_sales);
+          // end consequence handling
+          if(!_o.startAfter) that.scrolling_end_reached = false; 
+          //
+          that.allAxiesLoadedEvent();
+          return salesSnap;
+        }
+        else if(_loadMode == "READONLY"){
+          var sales = [];
+          salesSnap.forEach((sale) => {
+            sales.push(sale.data());
+          });
+          that.allAxiesLoadedEvent();
+          return sales;
+        }
         //
-        return salesSnap;
       });
     });
   }
@@ -979,6 +1015,89 @@ export class AxieSalesComponent implements OnInit {
     this.setAppStatus({"phase": "init", "loading" : ""});
     console.log("all axies loaded", this.APP_STATUS);
   }
+
+
+
+
+  /* 
+   Data Export 
+  */
+  clickExportButton(){
+    this.disable_export_btn = true;
+    this.setQueryOptions({"sorting" : null, "startAfter": null, "orderBy" : null, "limit" : 0});
+    this.loadAxiesFromDB("READONLY").then((data) =>{
+      var keys = this.getKeys(data[0]);
+      var formattedData = this.formatDataForCSV(data);
+      console.log("exported sales", formattedData);
+      this.exportCSVFile(keys, formattedData, "axie-sales");
+    });
+  }
+
+  getKeys(obj){
+    var keyObj = {};
+    for(let key in obj){
+      keyObj[key] = key;
+    }
+    return keyObj;
+  }
+
+  formatDataForCSV(data){
+    data.forEach(elem => {
+      elem.block_hash = elem.block_hash.toString();
+      elem.buyer = elem.buyer.toString();
+      elem.seller = elem.seller.toString();
+      elem.contractAddress = elem.contractAddress.toString();
+      elem.tokenAddress = elem.tokenAddress.toString();
+      elem.tx = elem.tx.toString();
+      //
+      elem.price = new BigNumber(elem.price).div(1000000000000000000);
+      elem.price = Math.round(elem.price.toNumber() * 1000) / 1000;
+    });
+    return data;
+  }
+
+  
+  convertToCSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    var str = '';
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
+        for (var index in array[i]) {
+            if (line != '') line += ','
+            line += array[i][index];
+        }
+        str += line + '\r\n';
+    }
+    return str;
+  }
+
+  exportCSVFile(headers, items, fileTitle) {
+      if (headers) {
+          items.unshift(headers);
+      }
+      // Convert Object to JSON
+      var jsonObject = JSON.stringify(items);
+      var csv = this.convertToCSV(jsonObject);
+      var exportedFilenmae = fileTitle + '.csv' || 'export.csv';
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      if (navigator.msSaveBlob) { // IE 10+
+          navigator.msSaveBlob(blob, exportedFilenmae);
+      } else {
+          var link = document.createElement("a");
+          if (link.download !== undefined) { // feature detection
+              // Browsers that support HTML5 download attribute
+              var url = URL.createObjectURL(blob);
+              link.setAttribute("href", url);
+              link.setAttribute("download", exportedFilenmae);
+              link.style.visibility = 'hidden';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+          }
+      }
+  }
+
+
 
 
 }

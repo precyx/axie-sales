@@ -54,3 +54,5 @@ Thumbs.db
 firebase.json
 firestore.indexes.json
 firestore.rules
+database.rules.json
+storage.rules
