@@ -1,0 +1,8 @@
+:host {}
+.line {display: flex; margin:0; 
+    .name {width:100%; }
+    .val {width:100%; }
+    .bar_container { height:20px; width:100%; display:flex; align-items: center; 
+        .bar {background:grey; height:8px; border-radius: 150px; }
+    }
+}

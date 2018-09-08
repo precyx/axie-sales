@@ -79,7 +79,7 @@
         <div class="gene_block">
           <div class="gene_field">
             <div class="split_genes">
-              <div class="split_gene mark_{{getGeneStructure(splitgene.bits)}}" *ngFor="let splitgene of compareResult.binaries">
+              <div matTooltip="{{splitgene.name}}" class="split_gene mark_{{getGeneStructure(splitgene.bits)}}" *ngFor="let splitgene of compareResult.binaries">
                 <div class="name" *ngIf="false">{{splitgene.name}}</div>
                 <div class="binary">{{splitgene.bits}}</div>
                 <div class="decimal">{{binaryToDecimal(splitgene.bits)}}</div>
@@ -133,7 +133,7 @@
       <div class="gene_field">
         <div class="gene_binary">
           <div class="split_genes">
-            <div class="split_gene" *ngFor="let splitgene of gene.binaries">
+            <div matTooltip="{{splitgene.name}}" class="split_gene" *ngFor="let splitgene of gene.binaries">
               <div class="name" *ngIf="false">{{splitgene.name}}</div>
               <div class="binary">{{splitgene.bits}}</div>
               <div class="decimal">{{binaryToDecimal(splitgene.bits)}}</div>
@@ -165,6 +165,12 @@
           </div>
         </div>
 
+        <div class="stats_field">
+          <app-axie-stats [stats]="gene.axieAPI.stats"></app-axie-stats>
+        </div>
+        <div class="parts_field">
+          <app-axie-parts [parts]="gene.axieAPI.parts"></app-axie-parts>
+        </div>
       </div> <!-- end server data field -->
 
       <div class="actionbar">

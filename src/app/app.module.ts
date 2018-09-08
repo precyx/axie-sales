@@ -1,4 +1,5 @@
 import { BrowserModule }              from '@angular/platform-browser';
+import {BrowserAnimationsModule}      from '@angular/platform-browser/animations'
 import { NgModule }                   from '@angular/core';
 import { FormsModule }                from '@angular/forms';
 
@@ -70,6 +71,9 @@ import { ArtboardComponent } from './axie-artstudio/artboard/artboard.component'
 import { AxieInspectorComponent } from './axie-inspector/axie-inspector.component';
 import { AxieTagComponent } from './ui/axie-tag/axie-tag.component';
 import { AxiePartIconComponent } from './ui/axie-part-icon/axie-part-icon.component';
+import { AxieStatsComponent } from './axie-inspector/axie-stats/axie-stats.component';
+import { AxiePartsComponent } from './axie-inspector/axie-parts/axie-parts.component';
+import { AxieWorldComponent } from './axie-world/axie-world.component';
 
 
 @NgModule({
@@ -133,9 +137,13 @@ export class MaterialModule { }
     AxieInspectorComponent,
     AxieTagComponent,
     AxiePartIconComponent,
+    AxieStatsComponent,
+    AxiePartsComponent,
+    AxieWorldComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,

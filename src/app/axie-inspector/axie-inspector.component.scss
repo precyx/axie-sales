@@ -1,369 +1,162 @@
 
-.genes {
-    display: flex;
-    flex-flow:column;
-}
+.genes { display: flex; flex-flow:column; }
+/* Content */
 .content {
     &.view_mode_module {
-        .genes {flex-flow: wrap;}
-        .gene {
-            font-family: monospace;
-            font-size: 12px;
-            display: flex;
-            background: #fff;
-            margin-bottom: 15px;
-            margin-right: 15px;
-            padding: 20px;
-            border-radius: 10px;
-            position: relative;
-            flex-flow: column-reverse;
-            width:180px;
-            .actionbar {
-                top:auto;
-                right:auto;
-                bottom:5px;
-                left:10px;
-            }
-            .id {
-                position: absolute;
-                right: 15px;
-                top: 20px;
-                color: #bdbdbd;
-                font-style: italic;
-                font-size: 12px;
-                font-weight: bold;
-                text-align: right;
-            }
-            .parts {display: none;}
+        .genes {flex-flow: wrap; background:white; padding:40px; }
+        .gene { font-family: monospace; font-size: 12px; display: flex; height:340px; width:260px; background: #fff; margin-bottom: 50px; margin-right: 15px; padding: 20px; padding-top:0; padding-bottom: 0; border-right:1px solid #e4e4e4; position: relative; flex-flow: column-reverse; 
+            .actionbar { right: 0px; top: auto; left: auto; background: #fff; border-radius: 0; bottom: 0; box-shadow: 0 1px 1px #0000004f; }
+            .id { position: absolute; right: 15px; top: 2px; color: #bdbdbd; font-style: italic; font-size: 12px; font-weight: bold; text-align: right; }
+            .parts {display: none; }
         }
-        .img_field {
-            flex:0.7;
-            .img {max-width: 140px;
-                max-height: 150px;}
+        .img_field { flex:0.7; 
+            .img {max-width: 140px; max-height: 150px; }
         }
-        .server_data_field {flex:0.3;}
-        .gene_field {display:none;}
+        .server_data_field {flex:0.3; }
+        .gene_field {display:none; }
 
     }
     &.view_mode_list {
-
+        app-axie-stats {display:flex; flex-flow:column; width:150px; margin-top:10px; margin-bottom: 10px; }
     }
 }
-.gene { 
-    font-family: monospace;  font-size: 12px; display: flex;  background: #fff; margin-bottom: 20px;  margin-right:20px; padding:20px; width: 100%; border-radius: 10px 0 0 10px; position: relative;
-    .id {
-        position: absolute;left: 10px;top: 5px;color: #bdbdbd;font-style: italic;font-size: 24px;font-weight: bold;
-    }
-    .gene_binary {
-        word-break: break-all; color: #8a8a8a; max-width:400px;
-        .split_genes {
-            display:flex; flex-flow: wrap;
-            .split_gene {
-                display:inline; position: relative;
-                margin-right: 5px;
-                border: 1px solid #e6e6e6;
-                padding: 2px 5px;
-                margin-bottom: 5px;
-                border-radius: 3px;
+/* Gene */
+.gene { font-family: monospace; font-size: 12px; display: flex; background: #fff; margin-bottom: 20px; margin-right:20px; padding:20px; width: 100%; border-radius: 10px 0 0 10px; position: relative; 
+    .id { position: absolute; left: 10px; top: 5px; color: #bdbdbd; font-style: italic; font-size: 24px; font-weight: bold; }
+    .gene_binary { word-break: break-all; color: #8a8a8a; max-width:400px; 
+        .split_genes { display:flex; flex-flow: wrap; 
+            .split_gene { display:inline; position: relative; margin-right: 5px; border: 1px solid #e6e6e6; padding: 2px 5px; margin-bottom: 5px; border-radius: 3px; 
                 .binary {                
-                    margin-right: 10px;
-                }
-                .decimal {
-                    color:red;
-                }
-                &:hover { background:#efefef;}
-
+                    margin-right: 10px; margin-left:0; }
+                .decimal { color:red; }
+                &:hover { background:#efefef; }
             }
         }
     }
-    .count {
-        display: none;
-    }
-    .img_field {
-        display: flex; 
-        align-items: center;
-        .img { 
-            max-width: 180px;
-            max-height: 150px;
-        }
+    .count { display: none; }
+    .img_field { display: flex; align-items: center; 
+        .img { max-width: 180px; max-height: 150px; }
     }
 
-    .class_field{
-        color : white;
+    .class_field{        color : white; 
         .inner { background: grey; padding:2px 5px; border-radius: 3px; display:inline-block; }
-        &.class_reptile .inner { background : #c88ae0;}
-        &.class_aquatic .inner { background : #00b8ce;}
-        &.class_bird .inner { background : #ff8bbd;}
-        &.class_plant .inner{ background : #6cc000;}
-        &.class_bug .inner{ background : #ff5341;}
-        &.class_beast .inner{ background : #ffb812;}
+        &.class_reptile .inner { background : #c88ae0; }
+        &.class_aquatic .inner { background : #00b8ce; }
+        &.class_bird .inner { background : #ff8bbd; }
+        &.class_plant .inner{ background : #6cc000; }
+        &.class_bug .inner{ background : #ff5341; }
+        &.class_beast .inner{ background : #ffb812; }
     }
-    .title_field {
-        color:white;
-        margin-left:5px;
+    .title_field { color:white; margin-left:5px; 
         .inner { background: #ff3d55; padding:2px 5px; border-radius: 3px; display:inline-block; }
     }
-    .parts_field {
-        margin-top:5px;
-        .parts {
-            display:flex;
-            flex-flow:column;
-        }
-        .part {
-            display: inline-block;
-            color:grey;
-            .text {display:inline-block;}
-            &.class_aquatic {color:#00b8ce;}
-            &.class_plant {color:#6cc000;}
-            &.class_beast {color:#ffb812;}
-            &.class_bug {color:#ff5341;}
-            &.class_reptile {color:#c88ae0;}
-            &.class_bird {color:#ff8bbd;}
-            &.mystic_true .text {    
-                padding: 0 3px;
-                border: 1px solid;
-                border-radius: 2px;
-            }
+    .parts_field { margin-top:5px; 
+        .parts { display:flex; flex-flow:column; }
+        .part { display: inline-block; color:grey; 
+            .text {display:inline-block; }
+            &.class_aquatic {color:#00b8ce; }
+            &.class_plant {color:#6cc000; }
+            &.class_beast {color:#ffb812; }
+            &.class_bug {color:#ff5341; }
+            &.class_reptile {color:#c88ae0; }
+            &.class_bird {color:#ff8bbd; }
+            &.mystic_true .text { padding: 0 3px; border: 1px solid; border-radius: 2px; }
         }
     }
-    .server_data_field {
-        font-family: arial, sans-serif;
-    }
-    &:hover .actionbar {
-        display:flex;
-    }
-    .actionbar {
-        display:none;
-        flex-flow:row; position: absolute; right:20px;  top:20px; background: rgba(255, 255, 255, 0.54); border-radius: 50px; padding: 0 5px;
-        .btn {
-            width:40px;  height: 40px; border-radius: 50%; margin-right: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer;
-            .icon {
-                opacity: 0.6;
+    .server_data_field { font-family: arial, sans-serif; }
+    &:hover .actionbar { display:flex; }
+    .actionbar { display:none; flex-flow:row; position: absolute; right:20px; top:20px; background: rgba(255, 255, 255, 0.54); border-radius: 50px; padding: 0 5px; 
+        .btn { width:40px; height: 40px; border-radius: 50%; margin-right: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; 
+            .icon { opacity: 0.6; }
+            &:hover {               .icon { opacity: 0.35; } 
             }
-            &:hover {
-               .icon {
-                opacity: 0.35;
-               } 
-            }
-            &:last-child {margin-right:0;}
+            &:last-child {margin-right:0; }
         }
     }
-
-    .class_line {display:flex;}
-
-    .img_field {flex:0.2;}
-    .gene_field {flex:0.4;}
+    .class_line {display:flex; }
+    .img_field {flex:0.2; }
+    .gene_field {flex:0.4; }
     .server_data_field {flex:0.4}
 } 
 
-
-.search_container{
-    margin-bottom: 40px;
-    display:flex;
-    justify-content: center;
-    input {
-        border-radius: 8px;
-        background:white;
-       
-    }
-    button {
-        border-radius: 8px; 
-        border:none;
-        margin-left: 10px;
-        padding: 13px 15px;
-    }
+/* Search Container */
+.search_container{    margin-bottom: 40px; display:flex; justify-content: center; 
+    input { border-radius: 8px; background:white; }
+    button { border-radius: 8px; border:none; margin-left: 10px; padding: 13px 15px; }
 }
 
-
-.genedelimiter_container {
-    margin-bottom: 20px; 
-    input {
-        border-radius: 8px; 
-        margin-right: 10px;
-    }
-    .change_btn {
-        padding: 7px 10px;
-        border: none;
-    }
-
+/* Gene Delimiter */
+.genedelimiter_container { margin-bottom: 20px; 
+    input { border-radius: 8px; margin-right: 10px; }
+    .change_btn { padding: 7px 10px; border: none; }
 }
-
+/* Comparison */
 .comparison_container { 
-    .axies { display:flex; flex-flow:row;}
-    .axie {
-        display:flex;
-        margin-right:10px;
-        font-size: 12px;
-        background:black;
-        color:white;
-        padding:6px 8px;
-        border-radius:3px;
-        cursor: pointer;
-        &.class_aquatic {background:#00b8ce;}
-        &.class_plant {background:#6cc000;}
-        &.class_beast {background:#ffb812;}
-        &.class_bug {background:#ff5341;}
-        &.class_reptile {background:#c88ae0;}
-        &.class_bird {background:#ff8bbd;}
+    .axies { display:flex; flex-flow:row; }
+    .axie { display:flex; margin-right:10px; font-size: 12px; background:black; color:white; padding:6px 8px; border-radius:3px; cursor: pointer; 
+        &.class_aquatic {background:#00b8ce; }
+        &.class_plant {background:#6cc000; }
+        &.class_beast {background:#ffb812; }
+        &.class_bug {background:#ff5341; }
+        &.class_reptile {background:#c88ae0; }
+        &.class_bird {background:#ff8bbd; }
     }
 }
 
-.view_mode_container {
-    display: flex;
-    align-items: center;
-    flex-flow: column;
-    .buttons {
-        display:flex;
-
-        .btn {
-            width: 40px;
-            height: 40px;
-            background: #efefef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            .icon {opacity: 0.6;}
+.view_mode_container { display: flex; align-items: center; flex-flow: column; 
+    .buttons { display:flex; 
+        .btn { width: 40px; height: 40px; background: #efefef; display: flex; align-items: center; justify-content: center; cursor: pointer; 
+            .icon {opacity: 0.6; }
+            &:hover {opacity: 0.6; }
         }
     }
 }
 
 .bar_level3 {
+    h2 { font-size: 14px; color: #808080; margin-bottom: 10px; }
 
-    h2 {
-        font-size: 14px;
-        color: #808080;
-        margin-bottom: 10px;
-    }
-
-    .center {
-        display: flex;
-        justify-content: space-between;
-    }
+    .center { display: flex; justify-content: space-between; }
 }
 
-.comparator {
-    position: fixed;
-    padding-bottom: 10px;
-    z-index: 99999999;
-    background: #fff;
-    box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4);
-    color: #545454;
-    font-family: monospace;
-    overflow-y: scroll;
-    width: calc(50vw);
-    left: calc(25vw);
-    padding: 20px;
-    padding-top:0;
-    bottom: calc(25vh);
-    height: calc(420px);
-    border-radius: 10px;
-
-    .close_btn {
-        display: flex;
-        width: 40px;
-        height: 40px;
-        position: absolute;
-        right: 10px;
-        top: 10px;
-        cursor: pointer;
-        justify-content: center;
-        align-items: center;
-        z-index: 500;
-        background: #fff;
-        border-radius: 50%;
-    }
-
-    .titlebar {
-        display: flex;
-        margin-bottom: 0;
-        position: fixed;
-        z-index: 100;
-        background: #fff;
-        padding-top:20px;
-        .axie_images {
-            display: flex;
-            img {
-                max-height: 40px;
-                max-width: 80px;
-                margin-left: 20px;
-                cursor: pointer;
-            }
+/* Comparator */
+.comparator { position: fixed; padding-bottom: 10px; z-index: 9; background: #fff; box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.4); color: #545454; font-family: monospace; overflow-y: scroll; width: calc(50vw); left: calc(25vw); padding: 20px; padding-top:0; bottom: calc(25vh); height: calc(420px); border-radius: 10px; 
+    .close_btn { display: flex; width: 40px; height: 40px; position: absolute; right: 10px; top: 10px; cursor: pointer; justify-content: center; align-items: center; z-index: 500; background: #fff; border-radius: 50%; }
+    .titlebar { display: flex; margin-bottom: 0; position: fixed; z-index: 100; background: #fff; padding-top:20px; 
+        .axie_images { display: flex; 
+            img { max-height: 40px; max-width: 80px; margin-left: 20px; cursor: pointer; }
         }
     }
-
-    .center {
-    }
-    h2 {
-        margin-bottom: 10px;
-    }
-    .axies {
-        padding-top:80px;
-    }
-    .axie {
-        display: flex;
-        flex-flow:column;
-        padding: 4px 0;
-        margin-bottom: 2px;
-        font-size: 12px;
-
-        .class_block {
-            display: flex;
-            margin-top:10px;
-            .field {
-                margin-right:5px;
-            }
+    h2 { margin-bottom: 10px; }
+    .axies { padding-top:80px; }
+    .axie { display: flex; flex-flow:column; padding: 4px 0; margin-bottom: 2px; font-size: 12px; 
+        .class_block { display: flex; margin-top:10px; 
+            .field { margin-right:5px; }
         }
-        .parts_block {
-            margin-top:10px;
-            .parts {display: flex;
-            .part {
-                margin-right:30px;
-                .img {
-                    display:flex;
-                    justify-content: center;
-                }
-                app-axie-part-icon {
-                    margin-bottom: 5px;
-                }
-                .val__NOMATCH {
-                    opacity: 0.3;
-                    color:grey!important;
-                }
+        .parts_block { margin-top:10px; 
+            .parts {display: flex; 
+            .part { margin-right:30px; 
+                .img { display:flex; justify-content: center; }
+                app-axie-part-icon { margin-bottom: 5px; }
+                .val__NOMATCH { opacity: 0.3; color:grey!important; }
             }
             }
         }
-
-        .id_field {
-            width:100px;
-        }
+        .id_field { width:100px; }
         .gene_field {
-            .split_genes {
-                display: flex;
-                flex-flow:wrap;
-            }
-            .split_gene {
-                margin-right: 5px; border: 1px solid #e6e6e6; padding: 2px 5px; margin-bottom: 5px; border-radius: 3px;
-                &:hover {background:#dcdcdc}
-                .decimal {
-                    color:red
-                }
-                &.mark_nomatch {
-                    opacity: 0.3;
-                }
-                &.mark_match {background:#ecfde3;}
-                &.mark_zeroval {background:#f3f8ff;}
+            .split_genes { display: flex; flex-flow:wrap; }
+            .split_gene { margin-right: 5px; border: 1px solid #e6e6e6; padding: 2px 5px; margin-bottom: 5px; border-radius: 3px; 
+                &:hover {background:#dcdcdc; border:1px solid grey; cursor: pointer; }
+                .decimal { color:red }
+                &.mark_nomatch { opacity: 0.3; }
+                &.mark_match {background:#ecfde3; }
+                &.mark_zeroval { background: #fff4e4; opacity: 0.3; }
             }
         }
         .class_field {
-            &.val__NO_CLASS_MATCH {opacity: 0.3;}
+            &.val__NO_CLASS_MATCH {opacity: 0.3; }
         }
         .title_field {
-            &.val__NO_TITLE_MATCH {
-                background:grey;
-                opacity: 0.3;
-            }
+            &.val__NO_TITLE_MATCH { background:grey; opacity: 0.3; }
         }
     }
-
 }

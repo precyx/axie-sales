@@ -47,7 +47,7 @@ h2 { font-size: 16px; text-align: center; color: #1f1f1f; white-space: nowrap; p
 
 /* Filter Group */
 .filtergroup { display:flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; } 
-.filtergroup .btn {margin-bottom: 10px;}
+.filtergroup .btn { margin-bottom: 10px; } 
 
 /* Top Filters */
 .top_filters { display:none; margin-left: 20px; } 
@@ -70,7 +70,7 @@ h2 { font-size: 16px; text-align: center; color: #1f1f1f; white-space: nowrap; p
 .filter_master app-search-field input { width:350px!important; } 
 
 /* export container */
-.export_container .export_btn {display: flex; align-items: center; padding: 0px 8px; font-size: 11px; font-weight: normal; color: #000000bd; background: #c1c1c1;}
+.export_container .export_btn { display: flex; align-items: center; padding: 0px 8px; font-size: 11px; font-weight: normal; color: #000000bd; background: #c1c1c1; } 
 .export_container .export_btn:hover { background: #d8d8d8; } 
 .export_container .export_btn .icon { width:16px; margin-right: 5px; } 
 .export_container .export_btn.disabled { opacity: 0.5; cursor: default; user-select: none; pointer-events: none; } 
@@ -108,10 +108,12 @@ h2 { font-size: 16px; text-align: center; color: #1f1f1f; white-space: nowrap; p
 .cell.axie_field img { max-width: 50px; max-height: 45px; } 
 .cell.axie_field img.stage1 { max-width: 15px; max-height: 15px; } 
 .cell.axie_field img.stage2 { max-width: 28px; max-height: 22px; } 
+.cell.axie_field img.avatar { border-radius: 50%; } 
 .cell.axie_field img.placeholder { max-width: 40px; max-height: 35px; } 
 .cell.axie_field .link { } 
 .cell.axie_field .axie_id { width:60px; color: grey; font-size: 12px; } 
 .cell.axie_field .axie_id { } 
+
 .cell.class_field { flex:0.2; } 
 .cell.exp_field { flex:0.2; } 
 .cell.level_field { flex:0.2; } 
@@ -288,9 +290,9 @@ h2 { font-size: 16px; text-align: center; color: #1f1f1f; white-space: nowrap; p
  }
 
  @media only screen and (max-width : 400px) { /*so*/
- .filtergroup {    flex-flow: row;}
+ .filtergroup { flex-flow: row; } 
 
- .filter_container  { margin-left: 5px; } 
+ .filter_container { margin-left: 5px; } 
  .filter_container .filter_btn { width: 35px; height: 35px; padding:0; align-items: center; justify-content: center; } 
  .filter_container .filter_btn span { display: none; } 
  .filter_container .filter_btn .icon { margin:0; } 

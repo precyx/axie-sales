@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, HostListener } from '@angular/core';
 //
 import { NgZone } from '@angular/core';
 import { NgModel } from '@angular/forms';
@@ -6,7 +6,7 @@ import {MatIconRegistry} from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, tap, retry  } from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 
@@ -19,6 +19,7 @@ import { FirebaseFirestore } from '@firebase/firestore-types';
 import { QuerySnapshot, CollectionReference } from '@google-cloud/firestore';
 
 import {VersionManagerService} from '../services/version-manager.service';
+import {AppStatusService} from '../services/app-status.service';
 
 declare let web3:any;
 declare var $:any;
@@ -59,6 +60,7 @@ export class AxieSalesComponent implements OnInit {
   axie_sales:Array<any> = [];
   axie_sales_backup:Array<any> = [];
   APP_STATUS:any = {"phase" : "setup", "subphase" : "", "loading": ""};
+  @Output() loading = new EventEmitter();
 
   /* Axie Sales Stats */
   axie_sales_totalEth:number = 0;
@@ -139,6 +141,7 @@ export class AxieSalesComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private db: AngularFirestore,
     private versionManager: VersionManagerService,
+    private appStatusService: AppStatusService,
     private activatedRoute: ActivatedRoute
   ){
     iconRegistry.addSvgIcon('search', sanitizer.bypassSecurityTrustResourceUrl('assets/icons/general/search.svg'));
@@ -159,7 +162,7 @@ export class AxieSalesComponent implements OnInit {
     });
     //
     this.versionManager.setVersionName("module", "Axie Sales");
-    this.versionManager.setVersion("module", "2.1.4");
+    this.versionManager.setVersion("module", "2.1.5");
   }
 
   ngOnInit() {
@@ -179,7 +182,10 @@ export class AxieSalesComponent implements OnInit {
   setAppStatus(_data:any){
     if("phase" in _data)      this.APP_STATUS["phase"]      = _data.phase;
     if("subphase" in _data)   this.APP_STATUS["subphase"]   = _data.subphase;
-    if("loading" in _data)    this.APP_STATUS["loading"]    = _data.loading;
+    if("loading" in _data)    {
+      this.APP_STATUS["loading"] = _data.loading;
+      this.appStatusService.emitChange(_data.loading);
+    }
   }
 
   /**
@@ -578,7 +584,7 @@ export class AxieSalesComponent implements OnInit {
 
 
   /**
-   * [getAxieSalesFromTo] gets all the [AuctionSuccessfull] event transactions from the [AxieClockAuction] contract in a range
+   * [getAxieSalesFromTo] gets all the [AuctionSuccessfull] event transactions from the [AxieClockAuction] contract in a range of [blocks]
    * @param _fromblock {number} 
    * @param _toblock {number} 
    */
@@ -1012,8 +1018,27 @@ export class AxieSalesComponent implements OnInit {
    * @event allAxiesLoaded fired when all Axies have loaded from the Firebase DB
    */
   allAxiesLoadedEvent(){
+    this.loadAxieImages();
     this.setAppStatus({"phase": "init", "loading" : ""});
     console.log("all axies loaded", this.APP_STATUS);
+  }
+
+  /**
+   * Load Full Body Axie Images  and Avatars
+   */
+  loadAxieImages(){
+    var axieAPI = "https://api.axieinfinity.com/v1/axies/";
+    this.axie_sales.forEach(sale=>{
+      if(!sale["new_img_loading"] && !sale["new_img_loaded"]) {
+        sale["new_img_loading"] = true;
+        this.http.get(axieAPI + sale.axie_id + "/").pipe((v)=>{return v}, retry(20)).subscribe((axieData:any)=>{
+          sale.avatar = axieData.figure.static.avatar;
+          sale.img2   = axieData.figure.static.idle;
+          sale["new_img_loading"] = false;
+          sale["new_img_loaded"] = true;
+        });
+      }
+    })
   }
 
 

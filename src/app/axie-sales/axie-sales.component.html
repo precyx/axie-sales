@@ -159,8 +159,8 @@
           <a class="cell axie_field" title="https://axieinfinity.com/axie/{{sale.axie_id}}" href="https://axieinfinity.com/axie/{{sale.axie_id}}" target="_blank">
             <span class="axie_id">#{{sale.axie_id}}</span>
             <div class="img_field">
-              <img *ngIf="sale.img" src="{{sale.img}}" class="stage{{sale.stage}}"/>
-              <img *ngIf="!sale.img" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
+              <img *ngIf="sale.avatar" src="{{sale.avatar}}" class="avatar"/>
+              <img *ngIf="!sale.img && !sale.avatar" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
             </div>
           </a>
           <div class="cell class_field">
@@ -205,8 +205,9 @@
             </div>
             <a class="axie_field" title="https://axieinfinity.com/axie/{{sale.axie_id}}" href="https://axieinfinity.com/axie/{{sale.axie_id}}" target="_blank">
               <div class="img_field">
-                <img *ngIf="sale.img"  src="{{sale.img}}" class="stage{{sale.stage}}"/>
-                <img *ngIf="!sale.img" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
+                <img *ngIf="sale.img2"  src="{{sale.img2}}" class="stage{{sale.stage}}"/>
+                <img *ngIf="sale.img && !sale.img2"  src="{{sale.img}}" class="stage{{sale.stage}}"/>
+                <img *ngIf="!sale.img && !sale.img2" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
               </div>
             </a>
           </div>

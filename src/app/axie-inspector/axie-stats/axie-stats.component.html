@@ -1,0 +1,25 @@
+<div class="line">
+  <div class="name">HP</div>
+  <div class="val hp">{{stats.hp}}</div>
+  <div class="bar_container">
+    <div class="bar" [ngStyle]="{'width':stat_calc.hp + '%', 'background':stat_colors.hp}"></div>
+  </div>
+</div>
+<div class="line">
+  <div class="name">Speed</div><div class="val speed">{{stats.speed}}</div>
+  <div class="bar_container">
+      <div class="bar" [ngStyle]="{'width':stat_calc.speed + '%', 'background':stat_colors.speed}"></div>
+    </div>
+</div> 
+<div class="line">
+  <div class="name">Skill</div><div class="val skill">{{stats.skill}}</div>
+  <div class="bar_container">
+      <div class="bar" [ngStyle]="{'width':stat_calc.skill + '%', 'background':stat_colors.skill}"></div>
+    </div>
+</div> 
+<div class="line">
+  <div class="name">Morale</div><div class="val morale">{{stats.morale}}</div>
+  <div class="bar_container">
+      <div class="bar" [ngStyle]="{'width':stat_calc.morale + '%', 'background':stat_colors.morale}"></div>
+    </div>
+</div> 

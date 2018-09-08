@@ -1,6 +1,6 @@
 <div class="headbar">
   <div class="center">
-    <div class="mainnav" *ngIf="true">
+    <div class="mainnav" *ngIf="!loading">
 
         <div class="menuicon" (click)="toggleMenu($event)">
           <mat-icon svgIcon="menu" class="icon"></mat-icon>

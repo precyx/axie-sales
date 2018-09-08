@@ -1,0 +1,24 @@
+
+<div class="parts">
+  <div class="part" *ngFor="let part of parts">
+    <div class="type">{{part.type}}</div>
+    <div class="moves" *ngFor="let move of part.moves">
+      <div class="atk">{{move.attack}}</div>
+      <div class="divider">/</div>
+      <div class="def">{{move.defense}}</div>
+      <div class="divider">/</div>
+      <div class="def">{{move.accuracy}}%</div>
+      <div class="divider">/</div>
+      <div class="atkdef">{{move.attack + move.defense}}</div>
+    </div>
+  </div>
+</div>
+
+<div class="total_stats">
+  <div class="line avg_atk">
+    <div class="name">Strength</div> <div class="val">{{stats.avg_atk}}</div>
+  </div>
+  <div class="line avg_def">
+    <div class="name">Defense</div> <div class="val">{{stats.avg_def}}</div>
+  </div>
+</div>

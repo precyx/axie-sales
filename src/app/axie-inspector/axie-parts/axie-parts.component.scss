@@ -1,0 +1,19 @@
+
+.line {margin:0; }
+
+.parts { width:180px; line-height: 130%; 
+    .part { display:flex; align-items: center; 
+    .type {width:100%; } 
+    .moves {display:flex; width:400px; white-space: nowrap; 
+        .atk {width:100%; text-align: right; }
+        .divider, .delimiter, .seperator {width:100%; text-align:center; }
+        .def {width:100%; text-align: right; }
+        .atkdef {width:100%; text-align: right; }
+    }
+    }
+}
+
+.total_stats { margin-top:10px; 
+    .name {width:100%; }
+    .val {width:100%; }
+}

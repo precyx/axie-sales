@@ -2,6 +2,7 @@ import { Component, OnInit, NgZone } from '@angular/core';
 
 /* Standard */
 import { HttpClient } from '@angular/common/http';
+import { catchError, map, tap, retry  } from 'rxjs/operators';
 import {BigNumber} from 'bignumber.js';
 import {MatIconRegistry} from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -39,7 +40,8 @@ export class AxieInspectorComponent implements OnInit {
 
   /* apis */
   axie_core_API:any;
-  axiedata_server_API:string = "https://axieinfinity.com/api/axies/";
+  axiedata_server_API:string = "https://axieinfinity.com/api/axies";
+  axiedata_server_API_v1:string = "https://api.axieinfinity.com/v1/axies";
 
   /* search */
   searchstring:string;
@@ -180,14 +182,36 @@ export class AxieInspectorComponent implements OnInit {
   }
 
   extendAxieData(axieData){
-    var url = this.axiedata_server_API +"/"+ axieData.id;
+    var url = this.axiedata_server_API_v1 +"/"+ axieData.id + "/";
     return new Promise((resolve,reject)=>{
-      this._http.get(url).subscribe((data:any)=>{
+      this._http.get(url).pipe((v)=>{return v}, retry(20)).subscribe((data:any)=>{
+        var promises = [];
         console.log("d",data);
         axieData["axieAPI"] = data;
-        axieData["img"] = data.figure.images[axieData.id+".png"];
-        resolve(axieData);
+        axieData["img"] = data.figure.static.idle;
+        // convert object to array
+        data.parts = Object.values(data.parts);
+        // get atlas data
+        /*promises.push(new Promise((resolve,rejct) => {
+          this.getAtlasData(data.figure.atlas).then((atlasData)=>{
+            axieData["atlasData"] = atlasData;
+            resolve();
+          });
+        }));*/
+        Promise.all(promises).then(()=>{
+          resolve(axieData);
+        });
         //console.log(data.figure.images[elem.id+".png"]);
+      });
+    });
+  }
+
+  getAtlasData(atlasURL){
+    return new Promise(()=>{
+      this._http.get(atlasURL, {responseType: 'text'}).subscribe((atlasData)=>{
+        //console.log("atlas", atlasData);
+        var arr = atlasData.split("\n");
+        //console.log(arr);
       });
     });
   }
@@ -240,10 +264,10 @@ export class AxieInspectorComponent implements OnInit {
     this.gene_map.forEach(elem => {
       var splitgene = genes_string.slice(0, elem.bits);
       genes_string = genes_string.substr(elem.bits, genes_string.length);
-      console.log("ss",genes_string);
+      //console.log("ss",genes_string);
       split_genes.push({"bits" : splitgene, "name" : elem.name});
     });
-    console.log("s",split_genes);
+    //console.log("s",split_genes);
     return split_genes;
   }
 
@@ -353,6 +377,11 @@ export class AxieInspectorComponent implements OnInit {
     if(this.binaryToDecimal(gene) == 0) return "zeroval";
     if(gene.indexOf('-') == -1) return "match";
     return "a";
+  }
+
+
+  setViewMode(mode){
+    this.view_mode = mode;
   }
 
 }
