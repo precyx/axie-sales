@@ -77,7 +77,9 @@
                   <div class="title">Title</div>
                   <div class="elems">
                       <app-toggle-button name="Origin" (click)="setFilter('title-origin')" [active]="isFilterActive('title-origin')" ></app-toggle-button>
-                      <app-toggle-button name="MEO Corp" (click)="setFilter('title-meocorp')" [active]="isFilterActive('title-meocorp')" ></app-toggle-button>
+                      <app-toggle-button name="MEO" (click)="setFilter('title-meocorp')" [active]="isFilterActive('title-meocorp')" ></app-toggle-button>
+                      <app-toggle-button name="MEO II" (click)="setFilter('title-meocorp2')" [active]="isFilterActive('title-meocorp2')" ></app-toggle-button>
+                      <app-toggle-button name="Agamogenesis" (click)="setFilter('title-agamogenesis')" [active]="isFilterActive('title-agamogenesis')" ></app-toggle-button>
                   </div>
                 </div>
                 <div class="line">
@@ -157,11 +159,11 @@
         <!-- row view 1 -->
         <div class="table_row_view1" *ngIf="!sale.detailview" (click)="toggleRow(sale)">
           <a class="cell axie_field" title="https://axieinfinity.com/axie/{{sale.axie_id}}" href="https://axieinfinity.com/axie/{{sale.axie_id}}" target="_blank">
-            <span class="axie_id">#{{sale.axie_id}}</span>
             <div class="img_field">
               <img *ngIf="sale.avatar" src="{{sale.avatar}}" class="avatar"/>
               <img *ngIf="!sale.img && !sale.avatar" src="../assets/icons/bw/axie_infinity.svg" class="placeholder">
             </div>
+            <span class="axie_id">#{{sale.axie_id}}</span>
           </a>
           <div class="cell class_field">
             <div class="inner cx_class cx_class_{{sale.class}}" title="{{sale.className}}">

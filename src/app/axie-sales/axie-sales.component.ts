@@ -80,6 +80,7 @@ export class AxieSalesComponent implements OnInit {
   // @depracted vars used for avoiding double sales write
   LAST_SCANNED_BLOCK:number;
   LAST_SCANNED_TX_INDEX:number;
+  LAST_TX_HASH:string;
 
   /* Pagination */
   pagination_sales_per_page:number = 15;
@@ -162,7 +163,7 @@ export class AxieSalesComponent implements OnInit {
     });
     //
     this.versionManager.setVersionName("module", "Axie Sales");
-    this.versionManager.setVersion("module", "2.1.5");
+    this.versionManager.setVersion("module", "2.2.0");
   }
 
   ngOnInit() {
@@ -288,35 +289,37 @@ export class AxieSalesComponent implements OnInit {
       //
       var where:any;
       switch(filter){
-        case "my-sales"       : where = {"prop" : "seller", "val" : web3.eth.defaultAccount};  break;
-        case "my-purchases"   : where = {"prop" : "buyer", "val" : web3.eth.defaultAccount}; break;
-        case "stage-adult"    : where = {"prop" : "stage", "val" : 4}; break;
-        case "stage-petite"   : where = {"prop" : "stage", "val" : 3}; break;
-        case "stage-larva"    : where = {"prop" : "stage", "val" : 2}; break;
-        case "stage-egg"      : where = {"prop" : "stage", "val" : 1}; break;
-        case "pureness-1"     : where = {"prop" : "pureness", "val" : 1}; break;
-        case "pureness-2"     : where = {"prop" : "pureness", "val" : 2}; break;
-        case "pureness-3"     : where = {"prop" : "pureness", "val" : 3}; break;
-        case "pureness-4"     : where = {"prop" : "pureness", "val" : 4}; break;
-        case "pureness-5"     : where = {"prop" : "pureness", "val" : 5}; break;
-        case "pureness-6"     : where = {"prop" : "pureness", "val" : 6}; break;
-        case "mystics-1"      : where = {"prop" : "mystic_count", "val" : 1}; break;
-        case "mystics-2"      : where = {"prop" : "mystic_count", "val" : 2}; break;
-        case "mystics-3"      : where = {"prop" : "mystic_count", "val" : 3}; break;
-        case "mystics-4"      : where = {"prop" : "mystic_count", "val" : 4}; break;
-        case "mystics-5"      : where = {"prop" : "mystic_count", "val" : 5}; break;
-        case "mystics-6"      : where = {"prop" : "mystic_count", "val" : 6}; break;
-        case "title-origin"   : where = {"prop" : "title", "val" : "Origin"}; break;
-        case "title-meocorp"  : where = {"prop" : "title", "val" : "MEO Corp"}; break;
-        case "class-beast"    : where = {"prop" : "class", "val" : "beast"}; break;
-        case "class-aquatic"  : where = {"prop" : "class", "val" : "aquatic"}; break;
-        case "class-plant"    : where = {"prop" : "class", "val" : "plant"}; break;
-        case "class-reptile"  : where = {"prop" : "class", "val" : "reptile"}; break;
-        case "class-bird"     : where = {"prop" : "class", "val" : "bird"}; break;
-        case "class-bug"      : where = {"prop" : "class", "val" : "bug"}; break;
-        case "class-nocturnal": where = {"prop" : "class", "val" : "nocturnal"}; break;
-        case "class-arctic"   : where = {"prop" : "class", "val" : "arctic"}; break;
-        case "class-robotic"  : where = {"prop" : "class", "val" : "robotic"}; break;
+        case "my-sales"           : where = {"prop" : "seller", "val" : web3.eth.defaultAccount};  break;
+        case "my-purchases"       : where = {"prop" : "buyer", "val" : web3.eth.defaultAccount}; break;
+        case "stage-adult"        : where = {"prop" : "stage", "val" : 4}; break;
+        case "stage-petite"       : where = {"prop" : "stage", "val" : 3}; break;
+        case "stage-larva"        : where = {"prop" : "stage", "val" : 2}; break;
+        case "stage-egg"          : where = {"prop" : "stage", "val" : 1}; break;
+        case "pureness-1"         : where = {"prop" : "pureness", "val" : 1}; break;
+        case "pureness-2"         : where = {"prop" : "pureness", "val" : 2}; break;
+        case "pureness-3"         : where = {"prop" : "pureness", "val" : 3}; break;
+        case "pureness-4"         : where = {"prop" : "pureness", "val" : 4}; break;
+        case "pureness-5"         : where = {"prop" : "pureness", "val" : 5}; break;
+        case "pureness-6"         : where = {"prop" : "pureness", "val" : 6}; break;
+        case "mystics-1"          : where = {"prop" : "mystic_count", "val" : 1}; break;
+        case "mystics-2"          : where = {"prop" : "mystic_count", "val" : 2}; break;
+        case "mystics-3"          : where = {"prop" : "mystic_count", "val" : 3}; break;
+        case "mystics-4"          : where = {"prop" : "mystic_count", "val" : 4}; break;
+        case "mystics-5"          : where = {"prop" : "mystic_count", "val" : 5}; break;
+        case "mystics-6"          : where = {"prop" : "mystic_count", "val" : 6}; break;
+        case "title-origin"       : where = {"prop" : "title", "val" : "Origin"}; break;
+        case "title-meocorp"      : where = {"prop" : "title", "val" : "MEO Corp"}; break;
+        case "title-meocorp2"     : where = {"prop" : "title", "val" : "MEO Corp II"}; break;
+        case "title-agamogenesis" : where = {"prop" : "title", "val" : "Agamogenesis"}; break;
+        case "class-beast"        : where = {"prop" : "class", "val" : "beast"}; break;
+        case "class-aquatic"      : where = {"prop" : "class", "val" : "aquatic"}; break;
+        case "class-plant"        : where = {"prop" : "class", "val" : "plant"}; break;
+        case "class-reptile"      : where = {"prop" : "class", "val" : "reptile"}; break;
+        case "class-bird"         : where = {"prop" : "class", "val" : "bird"}; break;
+        case "class-bug"          : where = {"prop" : "class", "val" : "bug"}; break;
+        case "class-nocturnal"    : where = {"prop" : "class", "val" : "nocturnal"}; break;
+        case "class-arctic"       : where = {"prop" : "class", "val" : "arctic"}; break;
+        case "class-robotic"      : where = {"prop" : "class", "val" : "robotic"}; break;
       }
       this.setQueryOptions({"sorting" : null, "where" : where, "startAfter": null, "orderBy" : null});
     }
@@ -382,7 +385,8 @@ export class AxieSalesComponent implements OnInit {
         if (doc.exists) {
           resolve({
             "block" : doc.data().block,
-            "transactionIndex" : doc.data().transactionIndex
+            "transactionIndex" : doc.data().transactionIndex,
+            "transactionHash" : doc.data().transactionHash
           });
         }
       });
@@ -522,6 +526,8 @@ export class AxieSalesComponent implements OnInit {
       that.getSalesLastScannedBlockData().then(function(blockData:any){
         that.LAST_SCANNED_BLOCK = blockData.block;
         that.LAST_SCANNED_TX_INDEX = blockData.transactionIndex;
+        that.LAST_TX_HASH = blockData.transactionHash;
+        console.log("chekk", that.LAST_SCANNED_BLOCK, that.LAST_SCANNED_TX_INDEX, that.LAST_TX_HASH);
         //
         resolve({
           "lastScannedBlock": blockData.block,
@@ -611,8 +617,10 @@ export class AxieSalesComponent implements OnInit {
         var promises = [];
         for(let i = 0; i < events.length; i++){
           // skip event if equal to last scanned event
+          console.log("pre hashh", events[i].transactionHash, that.LAST_TX_HASH)
           if(events[i].blockNumber      == that.LAST_SCANNED_BLOCK &&
-             events[i].transactionIndex == that.LAST_SCANNED_TX_INDEX) {
+             events[i].transactionIndex == that.LAST_SCANNED_TX_INDEX &&
+             events[i].transactionHash  == that.LAST_TX_HASH) {
              console.log("eql found", that.LAST_SCANNED_BLOCK, that.LAST_SCANNED_TX_INDEX);
              continue;
           }
@@ -633,6 +641,7 @@ export class AxieSalesComponent implements OnInit {
           });
           promises.push(p);
         }
+        console.log("promises: ", promises);
         return Promise.all(promises);
       }).then(function(transactions){ //getBlock
         var promises = [];
@@ -716,6 +725,7 @@ export class AxieSalesComponent implements OnInit {
           let tx = transactions[i];
           let p = new Promise(function(resolve, reject){
             // saves sale in DB with a transaction
+            console.log("TXX", tx);
             that.saveSaleWithTransaction(tx).then(function(data:any){
               resolve(data);
             }).catch(function(err:any){
@@ -781,21 +791,23 @@ export class AxieSalesComponent implements OnInit {
     var newSaleRef = that.DB.collection("sales").doc(_tx.transactionHash);
     // sale transaction
     return that.DB.runTransaction(function(transaction) {
-      return transaction.get(salesCountRef).then(function(salesCountDoc) {
-        return transaction.get(salesTotalEthRef).then(function(salesTotalEth) {
-          return transaction.get(salesLastScannedRef).then(function(salesLastScanned){
-            if (!salesCountDoc.exists) {
-              throw "Sales Count does not exist!";
-            }
-            //console.log("block", _tx.blockNumber, salesLastScanned.data().block);
-            //console.log("tx_index", _tx.transactionIndex, salesLastScanned.data().transactionIndex);
-            
-            // checking for concurrent sale writing by multiple users
-            // check #1 if the [current block] is higher than the [last scanned block] 
-            // check #2 if [current block] equals last scanned then check if [transaction index] is higher than [last scanned transaction index]
-            if(_tx.blockNumber > salesLastScanned.data().block ||
-              _tx.blockNumber == salesLastScanned.data().block &&
-              _tx.tx_index != salesLastScanned.data().transactionIndex) {
+      return transaction.get(salesLastScannedRef).then(function(salesLastScanned){
+        //console.log("block", _tx.blockNumber, salesLastScanned.data().block);
+        //console.log("tx_index", _tx.transactionIndex, salesLastScanned.data().transactionIndex);
+
+        // checking for concurrent sale writing by multiple users
+        // check #1 if the [current block] is higher than the [last scanned block] 
+        // check #2 if [current block] equals last scanned then check if [transaction index] is higher than [last scanned transaction index]
+        console.log("hashh", _tx.transactionHash, salesLastScanned.data().transactionHash);
+        if(_tx.blockNumber > salesLastScanned.data().block ||
+           _tx.blockNumber == salesLastScanned.data().block &&
+           _tx.tx_index > salesLastScanned.data().transactionIndex) {
+          //
+          return transaction.get(salesCountRef).then(function(salesCountDoc) {
+            return transaction.get(salesTotalEthRef).then(function(salesTotalEth) {
+              if (!salesCountDoc.exists) {
+                throw "Sales Count does not exist!";
+              }
               // data
               newSaleData.id = salesCountDoc.data().count + 1;
               console.log("sales count: " +salesCountDoc.data().count);
@@ -814,17 +826,25 @@ export class AxieSalesComponent implements OnInit {
               transaction.update(
                 salesLastScannedRef, { 
                 block: _tx.blockNumber, 
-                transactionIndex : _tx.transactionIndex 
+                transactionIndex : _tx.transactionIndex,
+                transactionHash: _tx.transactionHash,
               });
               return newSaleData.axie_id;
-            }
-            else {
-              that.setAppStatus({"loading": "Concurrent Syncing Error: Retrying ..."});
-              throw "error: concurrent syncing error.";
-            }
+              
+            }); //end-sales-total-eth 
+          }); //end-sales-count 
+        }
+        else {
+          transaction.update(
+            salesLastScannedRef, { 
+            block: salesLastScanned.data().block, 
+            transactionIndex : salesLastScanned.data().transactionIndex,
+            transactionHash: salesLastScanned.data().transactionHash,
           });
-        });
-      });
+          that.setAppStatus({"skipped": "Skipped duplicate Axie"});
+          return "skipped duplicate Axie";
+        }
+      }); //end-sales-last-scanned 
     }).then(function(data) {
       console.log("new sale ADDED ", data);
       that.setAppStatus({"loading": "Syncing Axie: #" + new BigNumber(_tx.tokenId).toNumber()});
@@ -833,7 +853,7 @@ export class AxieSalesComponent implements OnInit {
       throw {"error" : true, "code": "TRANSACTION_FAILED"};
     });
 
-  }
+  }//end-func
 
   /**
    * Saves a new [sale] with the [transactionHash] as ID in the Firebase DB

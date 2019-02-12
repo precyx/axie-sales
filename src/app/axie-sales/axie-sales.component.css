@@ -111,7 +111,7 @@ h2 { font-size: 16px; text-align: center; color: #1f1f1f; white-space: nowrap; p
 .cell.axie_field img.avatar { border-radius: 50%; } 
 .cell.axie_field img.placeholder { max-width: 40px; max-height: 35px; } 
 .cell.axie_field .link { } 
-.cell.axie_field .axie_id { width:60px; color: grey; font-size: 12px; } 
+.cell.axie_field .axie_id { width:60px; color: #717171;font-size: 12px; } 
 .cell.axie_field .axie_id { } 
 
 .cell.class_field { flex:0.2; } 
