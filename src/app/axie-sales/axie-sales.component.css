@@ -111,7 +111,7 @@ h2 { font-size: 16px; text-align: center; color: #1f1f1f; white-space: nowrap; p
 .cell.axie_field img.avatar { border-radius: 50%; } 
 .cell.axie_field img.placeholder { max-width: 40px; max-height: 35px; } 
 .cell.axie_field .link { } 
-.cell.axie_field .axie_id { width:60px; color: #717171;font-size: 12px; } 
+.cell.axie_field .axie_id { width:60px; color: #717171; font-size: 12px; } 
 .cell.axie_field .axie_id { } 
 
 .cell.class_field { flex:0.2; } 
@@ -170,11 +170,11 @@ h2 { font-size: 16px; text-align: center; color: #1f1f1f; white-space: nowrap; p
 .table_row_view2 .copy_btn:hover { opacity: 0.8; } 
 .table_row_view2 .copy_btn .icon { padding: 5px; } 
 .table_row_view2 .xa_axiedata { display: flex; flex-flow: column; align-items: left; flex:0.3; } 
-.table_row_view2 .xa_axiedata .xa_topbar { margin-bottom: 10px; display: flex; align-items: center; } 
+.table_row_view2 .xa_axiedata .xa_topbar { margin-bottom: -20px; display: flex; align-items: center; } 
 .table_row_view2 .xa_axiedata .xa_topbar .axie_id { margin-right: 5px; color: grey; } 
 .table_row_view2 .xa_axiedata .xa_topbar .cx_class .txt { display: inline-flex; margin:0 5px; } 
 .table_row_view2 .xa_axiedata .axie_field { } 
-.table_row_view2 .xa_axiedata .axie_field img { max-width: 200px; max-height: 140px; } 
+.table_row_view2 .xa_axiedata .axie_field img { max-width: 240px; max-height: 175px; } 
 .table_row_view2 .xa_axiedata .axie_field img.stage1 { max-width:35px; max-height: 30px; } 
 .table_row_view2 .xa_axiedata .axie_field img.stage2 { max-width:70px; max-height: 65px; } 
 .table_row_view2 .xa_axiedata .mysticcount { font-size: 12px; color: #a5a5a5; margin-left: 5px; border: 1px solid #dcdcdc; border-radius: 3px; padding: 2px 3px; } 
@@ -283,6 +283,7 @@ h2 { font-size: 16px; text-align: center; color: #1f1f1f; white-space: nowrap; p
  /* table view 2 */
  .table_row.detailview { position: relative; } 
  .table_row_view2 .xa_other .xa_expand { position: absolute; top:10px; right:10px; } 
+ .table_row_view2 .xa_topbar { margin-bottom: 0; } 
  .table_row_view2 .xa_axiedata { margin-right: 5px; } 
  .table_row_view2 .xa_axiedata .axie_field img { max-width: 90px; max-height: 90px; } 
  .table_row_view2 .xa_axiedata .mysticcount { white-space: nowrap; } 

@@ -20,6 +20,7 @@ import { QuerySnapshot, CollectionReference } from '@google-cloud/firestore';
 
 import {VersionManagerService} from '../services/version-manager.service';
 import {AppStatusService} from '../services/app-status.service';
+import { Z_FINISH } from 'zlib';
 
 declare let web3:any;
 declare var $:any;
@@ -686,7 +687,7 @@ export class AxieSalesComponent implements OnInit {
           var p = new Promise(function(resolve, reject){
             that.http.get("https://axieinfinity.com/api/axies/" + transactions[i].tokenId).subscribe(
               (elem:any) => {
-                //console.log(elem);
+                console.log("ee", elem);
                 switch(elem.stage){
                   case    1 : transactions[i].img = "assets/img/egg.png"; break;  
                   case    2 : transactions[i].img = "assets/img/larva.png"; break;
@@ -774,7 +775,7 @@ export class AxieSalesComponent implements OnInit {
       "class"           : _tx.class,
       "class_name"      : _tx.className,
       "stage"           : _tx.stage,
-      "img"             : _tx.img,
+      "img"             : _tx.img || "",
       "timestamp"       : _tx.timestamp,
       "tx"              : _tx.transactionHash,
       "tx_index"        : _tx.transactionIndex,
@@ -784,6 +785,7 @@ export class AxieSalesComponent implements OnInit {
       "contractAddress" : _tx.address,
       "tokenAddress"    : _tx.args._nftAddress
     };
+    console.log("new sale", newSaleData);
     // db references
     var salesCountRef = that.DB.doc("sales-metadata/sales-count");
     var salesTotalEthRef = that.DB.doc("sales-metadata/sales-total-eth");
@@ -1039,6 +1041,7 @@ export class AxieSalesComponent implements OnInit {
    */
   allAxiesLoadedEvent(){
     this.loadAxieImages();
+    this.loadAxieAvatars();
     this.setAppStatus({"phase": "init", "loading" : ""});
     console.log("all axies loaded", this.APP_STATUS);
   }
@@ -1047,18 +1050,32 @@ export class AxieSalesComponent implements OnInit {
    * Load Full Body Axie Images  and Avatars
    */
   loadAxieImages(){
-    var axieAPI = "https://api.axieinfinity.com/v1/axies/";
+    var axieAPI = "https://axieinfinity.com/api/v2/axies/";
     this.axie_sales.forEach(sale=>{
       if(!sale["new_img_loading"] && !sale["new_img_loaded"]) {
         sale["new_img_loading"] = true;
         this.http.get(axieAPI + sale.axie_id + "/").pipe((v)=>{return v}, retry(20)).subscribe((axieData:any)=>{
-          sale.avatar = axieData.figure.static.avatar;
-          sale.img2   = axieData.figure.static.idle;
+          sale.img2   = axieData.image;
           sale["new_img_loading"] = false;
           sale["new_img_loaded"] = true;
         });
       }
     })
+  }
+
+  loadAxieAvatars(){
+    var axieAPI = "https://api.axieinfinity.com/v1/figure/";
+    this.axie_sales.forEach(sale=>{
+      if(!sale["avatar_loading"] && !sale["avatar_loaded"]) {
+        sale["avatar_loading"] = true;
+        this.http.get(axieAPI + sale.axie_id + "/").pipe((v)=>{return v}, retry(20)).subscribe((axieData:any)=>{
+          sale.avatar = axieData.static.avatar;
+          sale["avatar_loading"] = false;
+          sale["avatar_loading"] = true;
+        });
+      }
+    })
+    
   }
 
 
